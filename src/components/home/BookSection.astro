@@ -1,5 +1,7 @@
 ---
+import { getImage } from "astro:assets";
 import BookCover from "@/components/home/BookCover";
+import coverImage from "@/assets/libroCover.jpg";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import { Button } from "@/components/ui/Button";
 import type { Libro } from "@/api/home";
@@ -11,6 +13,7 @@ interface Props {
 }
 
 const { book, author, href } = Astro.props;
+const cover = await getImage({ src: coverImage, width: 720, format: "webp" });
 
 const HIGHLIGHTS = ["Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"];
 ---
@@ -20,7 +23,7 @@ const HIGHLIGHTS = ["Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"];
 
   <div class="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2 md:gap-20">
     <ScrollReveal client:visible direction="up" className="md:order-2">
-      <BookCover client:visible title={book.titulo} author={author} />
+      <BookCover client:visible title={book.titulo} author={author} coverSrc={cover.src} />
     </ScrollReveal>
 
     <div class="flex flex-col gap-8 md:order-1">

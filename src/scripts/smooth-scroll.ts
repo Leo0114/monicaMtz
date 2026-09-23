@@ -32,3 +32,12 @@ export function scrollToTop() {
   if (window.mmLenis) window.mmLenis.scrollTo(0, { duration: 1.4 });
   else window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+/** Desplaza suavemente hasta un ancla (#id), con Lenis si está activo. */
+export function scrollToSection(hash: string) {
+  const target = document.querySelector<HTMLElement>(hash);
+  if (!target) return;
+  if (window.mmLenis) window.mmLenis.scrollTo(target, { duration: 1.6 });
+  else target.scrollIntoView({ behavior: "smooth", block: "start" });
+  history.replaceState(null, "", hash);
+}

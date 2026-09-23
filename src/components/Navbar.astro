@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import faceLogo from "@/assets/logo.png";
 import ThemeToggle from "@/components/shared/ThemeToggle.astro";
 import MobileMenu from "@/components/MobileMenu";
+import SocialIcon from "@/components/shared/SocialIcon";
 import { NAV_LINKS, SITE, SOCIAL_LINKS } from "@/constants/site";
 
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
@@ -16,9 +17,9 @@ const isActive = (href: string) => currentPath === href;
 >
   <nav
     aria-label="Principal"
-    class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full border border-transparent px-3 transition-all duration-700 ease-apple group-data-[scrolled=true]/header:border-line group-data-[scrolled=true]/header:bg-glass group-data-[scrolled=true]/header:shadow-[0_8px_32px_-16px] group-data-[scrolled=true]/header:shadow-primary/25 group-data-[scrolled=true]/header:backdrop-blur-xl group-data-[scrolled=true]/header:backdrop-saturate-150 md:h-16 md:px-5"
+    class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full md:grid md:grid-cols-[auto_1fr_auto] lg:grid-cols-[1fr_auto_1fr] border border-transparent px-3 transition-all duration-700 ease-apple group-data-[scrolled=true]/header:border-line group-data-[scrolled=true]/header:bg-glass group-data-[scrolled=true]/header:shadow-[0_8px_32px_-16px] group-data-[scrolled=true]/header:shadow-primary/25 group-data-[scrolled=true]/header:backdrop-blur-xl group-data-[scrolled=true]/header:backdrop-saturate-150 md:h-16 md:px-5"
   >
-    <a href="/" class="group flex items-center gap-3" aria-label={`${SITE.name}, inicio`}>
+    <a href="/" class="group flex items-center gap-3 md:justify-self-start" aria-label={`${SITE.name}, inicio`}>
       <span
         class="grid size-9 place-items-center overflow-hidden rounded-full border border-line bg-surface transition-transform duration-700 ease-apple group-hover:rotate-[-6deg] md:size-10"
       >
@@ -31,13 +32,37 @@ const isActive = (href: string) => currentPath === href;
           class="size-full object-cover mix-blend-multiply dark:mix-blend-normal dark:invert"
         />
       </span>
-      <span class="font-serif text-lg leading-none tracking-wide text-ink md:text-xl">
+      <span class="font-serif text-lg leading-none tracking-wide whitespace-nowrap text-ink md:hidden lg:inline lg:text-xl">
         {SITE.name}
       </span>
     </a>
 
-    <div class="hidden items-center gap-8 md:flex">
-      <ul class="flex items-center gap-7">
+    <!-- Redes al centro: lo más importante, siempre a la vista en escritorio -->
+    <ul aria-label="Redes sociales" class="hidden items-center gap-1 md:flex md:justify-self-center lg:gap-2">
+      {
+        SOCIAL_LINKS.map((social) => (
+          <li>
+            <a
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label}
+              title={social.label}
+              class="group/social relative grid size-9 place-items-center rounded-full text-muted transition-all duration-500 ease-apple hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary active:scale-90"
+            >
+              <SocialIcon id={social.id} className="size-[0.95rem] transition-transform duration-500 ease-apple group-hover/social:scale-110" />
+              <span
+                aria-hidden="true"
+                class="absolute -bottom-0.5 size-1 scale-0 rounded-full bg-primary transition-transform duration-500 ease-apple group-hover/social:scale-100"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="hidden items-center gap-6 md:flex md:justify-self-end lg:gap-8">
+      <ul class="flex items-center gap-5 lg:gap-7">
         {
           NAV_LINKS.map(({ label, href }) => (
             <li>

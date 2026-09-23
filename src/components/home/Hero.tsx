@@ -2,6 +2,7 @@ import { MotionConfig, motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { EASE_APPLE } from "@/lib/motion";
+import { scrollToSection } from "@/scripts/smooth-scroll";
 
 interface HeroProps {
   name: string;
@@ -95,7 +96,15 @@ export default function Hero({ name, motto, portraitSrc, faceSrc, bookHref }: He
               <Button href={bookHref} target="_blank" rel="noopener noreferrer" size="lg" icon={<Arrow />}>
                 Conoce el libro
               </Button>
-              <Button href="#redes" variant="outline" size="lg">
+              <Button
+                href="#redes"
+                variant="outline"
+                size="lg"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("#redes");
+                }}
+              >
                 Sígueme
               </Button>
             </motion.div>
