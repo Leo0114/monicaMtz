@@ -1,0 +1,63 @@
+---
+import { Image } from "astro:assets";
+import poster from "@/assets/libro.webp";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import type { Cortometraje } from "@/api/home";
+
+interface Props {
+  film: Cortometraje;
+}
+
+const { film } = Astro.props;
+
+const DETAILS = [
+  { label: "Estreno", value: film.fechaEstreno },
+  { label: "Sede", value: film.lugar },
+  { label: "Dirección", value: film.elencoYEquipo.director },
+  { label: "Elenco", value: film.elencoYEquipo.actrices.join(", ") },
+];
+---
+
+<section id="cortometraje" class="relative px-4 py-24 md:px-8 md:py-36">
+  <div class="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-12 md:gap-16">
+    <ScrollReveal client:visible direction="right" blur className="md:col-span-5">
+      <figure class="group relative mx-auto max-w-sm md:max-w-none">
+        <div
+          class="overflow-hidden rounded-[1.75rem] border border-line shadow-[0_50px_90px_-45px] shadow-black/60 transition-transform duration-1000 ease-apple group-hover:-translate-y-2"
+        >
+          <Image
+            src={poster}
+            alt={`Póster del cortometraje «${film.titulo}»`}
+            widths={[420, 640, 900]}
+            sizes="(min-width: 768px) 40vw, 90vw"
+            class="aspect-[3/4] w-full object-cover transition-transform duration-[2s] ease-apple group-hover:scale-[1.04]"
+          />
+        </div>
+      </figure>
+    </ScrollReveal>
+
+    <div class="flex flex-col gap-10 md:col-span-7">
+      <ScrollReveal client:visible>
+        <p class="mb-5 flex items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] text-primary uppercase md:text-xs">
+          <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+          Del libro a la pantalla
+        </p>
+        <h2 class="font-serif text-4xl leading-[1.02] font-light text-ink md:text-6xl">
+          Las mujeres son <em class="text-primary">como la muerte</em>
+        </h2>
+        <p class="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">{film.descripcion}</p>
+      </ScrollReveal>
+
+      <dl class="grid gap-x-10 border-t border-line sm:grid-cols-2">
+        {
+          DETAILS.map((item, i) => (
+            <ScrollReveal client:visible delay={i * 0.1} className="border-b border-line py-5">
+              <dt class="text-[0.65rem] tracking-[0.25em] text-muted uppercase">{item.label}</dt>
+              <dd class="mt-2 font-serif text-xl leading-snug text-ink md:text-2xl">{item.value}</dd>
+            </ScrollReveal>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

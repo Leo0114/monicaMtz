@@ -1,12 +1,100 @@
 ---
-import { Button } from "@/components/ui/Button";
-import { FiMoon, FiSun } from "react-icons/fi";
+/**
+ * Switch elegante de tema. El estado visual se deriva de la clase `.dark`
+ * en <html> (variant `dark:`), así nunca hay desfase entre SSR y cliente.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
 ---
 
-<Button variant="simple" data-theme-toggle aria-label="Toggle color theme">
-  <span class="shrink-0 text-lg flex items-center justify-center">
-    <FiMoon className="block dark:hidden" />
-    <FiSun className="hidden dark:block" />
+<button
+  type="button"
+  data-theme-toggle
+  role="switch"
+  aria-checked="false"
+  aria-label="Cambiar entre modo claro y oscuro"
+  class:list={[
+    "group relative inline-flex h-8 w-15 shrink-0 cursor-pointer items-center rounded-full border border-line bg-surface/70 p-1 shadow-inner shadow-primary/5 transition-colors duration-500 ease-apple hover:border-primary/50 active:scale-95",
+    className,
+  ]}
+>
+  <!-- Íconos del track -->
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    class="absolute left-2 size-3.5 text-muted opacity-0 transition-opacity duration-500 dark:opacity-100"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    class="absolute right-2 size-3.5 text-muted transition-opacity duration-500 dark:opacity-0"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z"></path>
+  </svg>
+
+  <!-- Perilla -->
+  <span
+    class="relative z-10 grid size-6 place-items-center rounded-full bg-primary text-on-primary shadow-md shadow-primary/30 transition-transform duration-700 ease-apple group-hover:scale-105 dark:translate-x-[26px]"
+  >
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      class="size-3.5 transition-all duration-700 ease-apple dark:scale-0 dark:rotate-90 dark:opacity-0"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+    </svg>
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      class="absolute size-3.5 scale-0 -rotate-90 opacity-0 transition-all duration-700 ease-apple dark:scale-100 dark:rotate-0 dark:opacity-100"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z"></path>
+    </svg>
   </span>
-  <span data-theme-label>Dark</span>
-</Button>
+</button>
+
+<script>
+  import { applyTheme, getTheme, toggleTheme } from "@/scripts/theme";
+
+  const syncAria = () => {
+    const isDark = getTheme() === "dark";
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-theme-toggle]")
+      .forEach((btn) => btn.setAttribute("aria-checked", String(isDark)));
+  };
+
+  // Delegación: sobrevive a los swaps del ClientRouter sin duplicar listeners.
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    if (!target?.closest("[data-theme-toggle]")) return;
+    toggleTheme();
+    syncAria();
+  });
+
+  document.addEventListener("astro:after-swap", () => applyTheme(getTheme()));
+  document.addEventListener("astro:page-load", syncAria);
+</script>

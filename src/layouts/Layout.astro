@@ -2,29 +2,88 @@
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
+import ScrollTop from "@/components/shared/ScrollTop.astro";
+import { SITE } from "@/constants/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE.description } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · Si yo puedo, tú también`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
+const ogImage = new URL("/logo.png", Astro.site ?? SITE.url).href;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es-MX">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <ClientRouter />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3e9dd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/webp" href="/ico.webp" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+
+    <SEO
+      title={fullTitle}
+      description={description}
+      canonical={canonical}
+      openGraph={{
+        basic: { title: fullTitle, type: "website", image: ogImage, url: canonical },
+        optional: { siteName: SITE.name, locale: SITE.locale, description },
+      }}
+      twitter={{ card: "summary_large_image" }}
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
+    />
+
+    <!-- Aplica el tema antes del primer paint para evitar parpadeo -->
+    <script is:inline>
+      (() => {
+        let theme;
+        try {
+          theme = localStorage.getItem("mm-theme");
+        } catch {}
+        if (theme !== "light" && theme !== "dark") {
+          theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+
+    <ClientRouter />
   </head>
-  <body>
-    <slot />
+  <body class="min-h-dvh overflow-x-clip">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-full focus:bg-primary focus:px-5 focus:py-2 focus:text-on-primary"
+    >
+      Saltar al contenido
+    </a>
+
+    <Navbar />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <ScrollTop />
+
+    <script>
+      import { initSmoothScroll } from "@/scripts/smooth-scroll";
+
+      initSmoothScroll();
+      document.addEventListener("astro:after-swap", () => {
+        window.mmLenis?.scrollTo(0, { immediate: true, force: true });
+      });
+    </script>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import faceLogo from "@/assets/logo.png";
+import ThemeToggle from "@/components/shared/ThemeToggle.astro";
+import MobileMenu from "@/components/MobileMenu";
+import { NAV_LINKS, SITE, SOCIAL_LINKS } from "@/constants/site";
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => currentPath === href;
+---
+
+<header
+  id="site-header"
+  data-scrolled="false"
+  class="group/header fixed inset-x-0 top-0 z-50 px-4 pt-3 transition-[padding] duration-700 ease-apple md:px-8 md:pt-5 data-[scrolled=true]:md:pt-3"
+>
+  <nav
+    aria-label="Principal"
+    class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full border border-transparent px-3 transition-all duration-700 ease-apple group-data-[scrolled=true]/header:border-line group-data-[scrolled=true]/header:bg-glass group-data-[scrolled=true]/header:shadow-[0_8px_32px_-16px] group-data-[scrolled=true]/header:shadow-primary/25 group-data-[scrolled=true]/header:backdrop-blur-xl group-data-[scrolled=true]/header:backdrop-saturate-150 md:h-16 md:px-5"
+  >
+    <a href="/" class="group flex items-center gap-3" aria-label={`${SITE.name}, inicio`}>
+      <span
+        class="grid size-9 place-items-center overflow-hidden rounded-full border border-line bg-surface transition-transform duration-700 ease-apple group-hover:rotate-[-6deg] md:size-10"
+      >
+        <Image
+          src={faceLogo}
+          alt=""
+          width={80}
+          height={80}
+          loading="eager"
+          class="size-full object-cover mix-blend-multiply dark:mix-blend-normal dark:invert"
+        />
+      </span>
+      <span class="font-serif text-lg leading-none tracking-wide text-ink md:text-xl">
+        {SITE.name}
+      </span>
+    </a>
+
+    <div class="hidden items-center gap-8 md:flex">
+      <ul class="flex items-center gap-7">
+        {
+          NAV_LINKS.map(({ label, href }) => (
+            <li>
+              <a
+                href={href}
+                aria-current={isActive(href) ? "page" : undefined}
+                class="group relative py-2 text-[0.7rem] font-medium tracking-[0.22em] text-muted uppercase transition-colors duration-500 hover:text-ink aria-[current=page]:text-ink"
+              >
+                {label}
+                <span class="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-primary transition-transform duration-500 ease-apple group-hover:scale-x-100 group-aria-[current=page]:scale-x-100" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <span class="h-5 w-px bg-line" aria-hidden="true"></span>
+      <ThemeToggle />
+    </div>
+
+    <div class="flex items-center gap-3 md:hidden">
+      <ThemeToggle />
+      <MobileMenu client:media="(max-width: 767px)" links={NAV_LINKS} socials={SOCIAL_LINKS} currentPath={currentPath} />
+    </div>
+  </nav>
+</header>
+
+<script>
+  const update = () => {
+    document
+      .getElementById("site-header")
+      ?.setAttribute("data-scrolled", String(window.scrollY > 24));
+  };
+  window.addEventListener("scroll", update, { passive: true });
+  document.addEventListener("astro:page-load", update);
+</script>

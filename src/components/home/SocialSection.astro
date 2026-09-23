@@ -1,0 +1,68 @@
+---
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import SocialIcon from "@/components/shared/SocialIcon";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { SOCIAL_LINKS } from "@/constants/site";
+---
+
+<section id="redes" class="relative px-4 py-24 md:px-8 md:py-36">
+  <div class="mx-auto flex max-w-6xl flex-col gap-14 md:gap-20">
+    <SectionHeading
+      eyebrow="Comunidad"
+      title="Acompáñame "
+      accent="en redes"
+      description="Clips diarios, detrás de cámaras y episodios completos todos los viernes."
+      align="center"
+    />
+
+    <ul class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 md:gap-5">
+      {
+        SOCIAL_LINKS.map((social, i) => (
+          <li class:list={[i === 0 && "sm:col-span-2 md:row-span-2", i === 1 && "sm:col-span-2", i < 2 && "md:col-span-2"]}>
+            <ScrollReveal client:visible delay={i * 0.1} className="h-full">
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class:list={[
+                  "group relative flex h-full flex-col justify-between gap-10 overflow-hidden rounded-[1.75rem] border border-line p-6 transition-all duration-700 ease-apple hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px] hover:shadow-primary/40 active:scale-[0.985] md:p-8",
+                  i === 0 ? "bg-primary text-on-primary md:min-h-[26rem]" : "bg-surface text-ink hover:border-primary/40",
+                ]}
+              >
+                <div class="flex items-start justify-between">
+                  <span
+                    class:list={[
+                      "grid place-items-center rounded-full transition-transform duration-700 ease-apple group-hover:scale-110 group-hover:-rotate-6",
+                      i === 0 ? "size-16 bg-on-primary/10 md:size-20" : "size-12 bg-primary/10 text-primary",
+                    ]}
+                  >
+                    <SocialIcon id={social.id} className={i === 0 ? "size-7 md:size-8" : "size-5"} />
+                  </span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    class="size-5 opacity-50 transition-all duration-500 ease-apple group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8" />
+                  </svg>
+                </div>
+                <div>
+                  <p class:list={["text-[0.65rem] tracking-[0.25em] uppercase", i === 0 ? "opacity-70" : "text-muted"]}>
+                    {social.handle}
+                  </p>
+                  <h3 class:list={["mt-2 font-serif leading-none", i === 0 ? "text-5xl md:text-7xl" : "text-3xl"]}>
+                    {social.label}
+                  </h3>
+                  <p class:list={["mt-3 text-sm", i === 0 ? "opacity-80" : "text-muted"]}>{social.description}</p>
+                </div>
+              </a>
+            </ScrollReveal>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

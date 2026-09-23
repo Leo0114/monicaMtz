@@ -1,0 +1,29 @@
+---
+interface Props {
+  phrases: string[];
+}
+const { phrases } = Astro.props;
+// Duplicamos la lista para un loop sin costuras (translateX -50%).
+const loop = [...phrases, ...phrases, ...phrases, ...phrases];
+---
+
+<section aria-label="Frases" class="relative overflow-hidden border-y border-line bg-surface py-6 md:py-8">
+  <div class="flex w-max animate-marquee items-center hover:[animation-play-state:paused]">
+    {
+      loop.map((phrase, i) => (
+        <span
+          aria-hidden={i >= phrases.length ? "true" : undefined}
+          class="mr-10 flex items-center gap-10 font-serif text-2xl whitespace-nowrap text-ink/80 italic md:mr-16 md:gap-16 md:text-4xl"
+        >
+          {phrase}
+          <svg viewBox="0 0 24 24" class="size-3 text-primary md:size-4" aria-hidden="true">
+            <path fill="currentColor" d="M12 0c.6 6.6 5.4 11.4 12 12-6.6.6-11.4 5.4-12 12-.6-6.6-5.4-11.4-12-12C6.6 11.4 11.4 6.6 12 0Z" />
+          </svg>
+        </span>
+      ))
+    }
+  </div>
+  <!-- Bordes que se desvanecen -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-linear-to-r from-surface to-transparent md:w-40"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-surface to-transparent md:w-40"></div>
+</section>

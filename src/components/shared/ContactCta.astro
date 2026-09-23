@@ -1,0 +1,53 @@
+---
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { Button } from "@/components/ui/Button";
+import { CONTACT } from "@/constants/site";
+---
+
+<section class="px-4 md:px-8">
+  <ScrollReveal client:visible blur className="mx-auto max-w-6xl">
+    <div
+      class="relative isolate overflow-hidden rounded-[2rem] bg-primary px-6 py-16 text-center text-on-primary md:rounded-[2.5rem] md:px-16 md:py-24"
+    >
+      <!-- Trazo del monograma como textura -->
+      <svg
+        viewBox="0 0 120 60"
+        aria-hidden="true"
+        class="absolute top-1/2 left-1/2 -z-10 w-[140%] max-w-none -translate-x-1/2 -translate-y-1/2 text-on-primary/[0.07] md:w-full"
+      >
+        <path
+          d="M4 44c10 6 22-6 32-22S54 2 58 14s-8 36-2 38 10-24 22-34 20-6 22 6 6 26 16 22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.2"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+
+      <p class="text-[0.65rem] tracking-[0.3em] uppercase opacity-70 md:text-xs">Colaboraciones y prensa</p>
+      <h2 class="mx-auto mt-5 max-w-3xl font-serif text-4xl leading-[1.02] font-light md:text-6xl">
+        Creemos juntas algo <em>que valga la pena contar</em>.
+      </h2>
+      <p class="mx-auto mt-6 max-w-lg text-sm leading-relaxed opacity-80 md:text-base">
+        Marcas, medios, eventos o proyectos con propósito: me encantará escucharte.
+      </p>
+      <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <Button
+          href="/contacto"
+          size="lg"
+          className="bg-on-primary! text-primary! shadow-none! hover:-translate-y-0.5"
+        >
+          Escríbeme
+        </Button>
+        <Button
+          href={CONTACT.phoneHref}
+          variant="outline"
+          size="lg"
+          className="border-on-primary/40! text-on-primary! hover:border-on-primary! hover:bg-on-primary! hover:text-primary!"
+        >
+          Llamar
+        </Button>
+      </div>
+    </div>
+  </ScrollReveal>
+</section>

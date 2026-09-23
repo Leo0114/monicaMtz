@@ -1,11 +1,43 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getImage } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/home/Hero";
+import MottoMarquee from "@/components/home/MottoMarquee.astro";
+import AboutSection from "@/components/home/AboutSection.astro";
+import BookSection from "@/components/home/BookSection.astro";
+import FilmSection from "@/components/home/FilmSection.astro";
+import SeriesSection from "@/components/home/SeriesSection.astro";
+import SocialSection from "@/components/home/SocialSection.astro";
+import GallerySlider from "@/components/home/GallerySlider.astro";
+import ContactCta from "@/components/shared/ContactCta.astro";
+import { datosHome } from "@/api/home";
+import { BOOK_URL } from "@/constants/site";
+import brandLogo from "@/assets/realLogo.jpeg";
+import faceLogo from "@/assets/logo.png";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const [portrait, face] = await Promise.all([
+  getImage({ src: brandLogo, width: 900, format: "webp" }),
+  getImage({ src: faceLogo, width: 160, format: "webp" }),
+]);
+
+const [motto] = datosHome.lema.split(" - ");
 ---
 
 <Layout>
-	<Welcome />
+  <Hero
+    client:load
+    name={datosHome.autora}
+    motto={`${motto}.`}
+    portraitSrc={portrait.src}
+    faceSrc={face.src}
+    bookHref={BOOK_URL}
+  />
+  <MottoMarquee phrases={["Si yo puedo, tú también", "Primero ser y después tener", "El arte de mentirnos"]} />
+  <AboutSection />
+  <BookSection book={datosHome.libro} author={datosHome.autora} href={BOOK_URL} />
+  <FilmSection film={datosHome.cortometraje} />
+  <SeriesSection series={datosHome.series} />
+  <SocialSection />
+  <GallerySlider />
+  <ContactCta />
 </Layout>

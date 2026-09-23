@@ -1,0 +1,58 @@
+---
+import BookCover from "@/components/home/BookCover";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { Button } from "@/components/ui/Button";
+import type { Libro } from "@/api/home";
+
+interface Props {
+  book: Libro;
+  author: string;
+  href: string;
+}
+
+const { book, author, href } = Astro.props;
+
+const HIGHLIGHTS = ["Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"];
+---
+
+<section id="libro" class="relative overflow-hidden bg-surface px-4 py-24 md:px-8 md:py-36">
+  <div aria-hidden="true" class="absolute top-0 left-1/2 h-px w-2/3 -translate-x-1/2 bg-linear-to-r from-transparent via-primary/40 to-transparent"></div>
+
+  <div class="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2 md:gap-20">
+    <ScrollReveal client:visible direction="up" className="md:order-2">
+      <BookCover client:visible title={book.titulo} author={author} />
+    </ScrollReveal>
+
+    <div class="flex flex-col gap-8 md:order-1">
+      <ScrollReveal client:visible>
+        <p class="mb-5 flex items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] text-primary uppercase md:text-xs">
+          <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+          Mi libro
+        </p>
+        <h2 class="font-serif text-5xl leading-[0.98] font-light text-ink md:text-7xl">
+          El arte de <em class="text-primary">mentirnos</em>
+        </h2>
+        <p class="mt-6 max-w-lg text-base leading-relaxed text-muted md:text-lg">{book.descripcion}</p>
+      </ScrollReveal>
+
+      <ScrollReveal client:visible delay={0.15}>
+        <ul class="flex flex-wrap gap-2" aria-label="Temas del libro">
+          {
+            HIGHLIGHTS.map((tag) => (
+              <li class="rounded-full border border-line px-4 py-1.5 text-xs tracking-wide text-ink/80 transition-colors duration-500 hover:border-primary hover:text-primary">
+                {tag}
+              </li>
+            ))
+          }
+        </ul>
+      </ScrollReveal>
+
+      <ScrollReveal client:visible delay={0.25} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Button href={href} target="_blank" rel="noopener noreferrer" size="lg">
+          Cómpralo en {book.plataforma}
+        </Button>
+        <p class="text-xs tracking-wide text-muted">Disponible en Amazon México</p>
+      </ScrollReveal>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,46 @@
+---
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import type { SerieContenido } from "@/api/home";
+
+interface Props {
+  series: SerieContenido[];
+}
+
+const { series } = Astro.props;
+---
+
+<section id="contenido-series" class="relative bg-surface px-4 py-24 md:px-8 md:py-36">
+  <div class="mx-auto flex max-w-6xl flex-col gap-14 md:gap-20">
+    <SectionHeading
+      eyebrow="Contenido"
+      title="Espacios para "
+      accent="sentir, moverse y compartir"
+      description="Cada semana, nuevas conversaciones y rutinas pensadas para acompañarte."
+    />
+
+    <ul class="grid gap-5 md:grid-cols-3 md:gap-6">
+      {
+        series.map((serie, i) => (
+          <li>
+            <ScrollReveal client:visible delay={i * 0.12} className="h-full">
+              <article class="group relative flex h-full flex-col justify-between gap-16 overflow-hidden rounded-[1.75rem] border border-line bg-bgColor p-7 transition-all duration-700 ease-apple hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_30px_60px_-30px] hover:shadow-primary/30 md:p-9">
+                <div
+                  aria-hidden="true"
+                  class="absolute -top-24 -right-24 size-48 rounded-full bg-primary/10 opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-100"
+                />
+                <span class="font-serif text-6xl leading-none text-primary/25 italic transition-colors duration-700 group-hover:text-primary/60">
+                  0{i + 1}
+                </span>
+                <div>
+                  <h3 class="font-serif text-3xl leading-tight text-ink">{serie.nombre}</h3>
+                  <p class="mt-3 text-sm leading-relaxed text-muted md:text-base">{serie.descripcion}</p>
+                </div>
+              </article>
+            </ScrollReveal>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
