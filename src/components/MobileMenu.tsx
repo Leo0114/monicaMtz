@@ -28,8 +28,15 @@ export default function MobileMenu({
     document.documentElement.style.overflow = open ? "hidden" : "";
 
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    // Al pasar a escritorio (lg) el botón desaparece: cierra para no dejar el scroll bloqueado.
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const onDesktop = () => desktop.matches && setOpen(false);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    desktop.addEventListener("change", onDesktop);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onDesktop);
+    };
   }, [open]);
 
   return (
@@ -40,7 +47,7 @@ export default function MobileMenu({
         aria-expanded={open}
         aria-controls="mobile-menu"
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
-        className="relative z-60 grid size-10 place-items-center rounded-full border border-line bg-surface/70 transition-transform duration-300 active:scale-90"
+        className="relative z-60 grid size-10 shrink-0 cursor-pointer touch-manipulation place-items-center rounded-full border border-line bg-surface/70 transition-transform duration-300 active:scale-90"
       >
         <span className="relative block h-3 w-4.5">
           <motion.span
@@ -72,7 +79,8 @@ export default function MobileMenu({
                 role="dialog"
                 aria-modal="true"
                 aria-label="Menú"
-                className="fixed inset-0 z-40 flex flex-col justify-between bg-bgColor/95 px-6 pt-28 pb-10 backdrop-blur-2xl"
+                data-lenis-prevent
+                className="fixed inset-0 z-40 overflow-y-auto overscroll-contain bg-bgColor/95 backdrop-blur-2xl"
                 initial={{
                   opacity: 0,
                   clipPath: "circle(0% at calc(100% - 44px) 44px)",
@@ -87,65 +95,70 @@ export default function MobileMenu({
                 }}
                 transition={{ duration: 0.7, ease: EASE_APPLE }}
               >
-                <ul className="flex flex-col gap-1">
-                  {links.map(({ label, href, facet }, i) => (
-                    <motion.li
-                      key={href}
-                      initial={{ opacity: 0, y: 24 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: 0.15 + i * 0.07,
-                        duration: 0.7,
-                        ease: EASE_APPLE,
-                      }}
-                    >
-                      <a
-                        href={href}
-                        onClick={() => setOpen(false)}
-                        aria-current={currentPath === href ? "page" : undefined}
-                        data-facet={facet}
-                        className="flex items-center gap-4 py-1.5 font-serif text-4xl leading-tight text-ink/60 transition-colors active:text-primary aria-[current=page]:text-ink"
+                {/* min-h-full + scroll en el padre: en pantallas bajas el contenido se desplaza en vez de cortarse. */}
+                <div className="mx-auto flex min-h-full w-full max-w-xl flex-col justify-between gap-10 px-6 pt-24 pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-10 sm:pt-32">
+                  <ul className="flex flex-col gap-1">
+                    {links.map(({ label, href, facet }, i) => (
+                      <motion.li
+                        key={href}
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: 0.15 + i * 0.07,
+                          duration: 0.7,
+                          ease: EASE_APPLE,
+                        }}
                       >
-                        <span className="w-5 font-sans text-xs tracking-widest text-primary">
-                          0{i + 1}
-                        </span>
-                        {label}
-                        {facet && (
-                          <span
-                            aria-hidden="true"
-                            className="size-2 shrink-0 rounded-full bg-primary"
-                          />
-                        )}
-                      </a>
-                    </motion.li>
-                  ))}
-                </ul>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.35, duration: 0.6 }}
-                  className="flex flex-col gap-5 border-t border-line pt-6"
-                >
-                  <p className="text-[0.65rem] tracking-[0.25em] text-muted uppercase">
-                    Sígueme
-                  </p>
-                  <ul className="flex gap-3">
-                    {socials.map((s) => (
-                      <li key={s.id}>
                         <a
-                          href={s.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={s.label}
-                          className="grid size-12 place-items-center rounded-full border border-line text-primary transition-all active:scale-90 active:bg-primary active:text-on-primary"
+                          href={href}
+                          onClick={() => setOpen(false)}
+                          aria-current={
+                            currentPath === href ? "page" : undefined
+                          }
+                          data-facet={facet}
+                          className="flex items-center gap-4 py-1.5 font-serif text-3xl leading-tight text-ink/60 min-[380px]:text-4xl sm:text-5xl transition-colors active:text-primary aria-[current=page]:text-ink"
                         >
-                          <SocialIcon id={s.id} className="size-4.5" />
+                          <span className="w-5 font-sans text-xs tracking-widest text-primary">
+                            0{i + 1}
+                          </span>
+                          {label}
+                          {facet && (
+                            <span
+                              aria-hidden="true"
+                              className="size-2 shrink-0 rounded-full bg-primary"
+                            />
+                          )}
                         </a>
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
-                </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.35, duration: 0.6 }}
+                    className="flex flex-col gap-5 border-t border-line pt-6"
+                  >
+                    <p className="text-[0.65rem] tracking-[0.25em] text-muted uppercase">
+                      Sígueme
+                    </p>
+                    <ul className="flex flex-wrap gap-3">
+                      {socials.map((s) => (
+                        <li key={s.id}>
+                          <a
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={s.label}
+                            className="grid size-12 place-items-center rounded-full border border-line text-primary transition-all active:scale-90 active:bg-primary active:text-on-primary"
+                          >
+                            <SocialIcon id={s.id} className="size-4.5" />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>,
