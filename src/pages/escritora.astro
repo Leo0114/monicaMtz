@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import FacetHero from "@/components/facets/FacetHero.astro";
+import FacetGrid from "@/components/facets/FacetGrid.astro";
+import BookSection from "@/components/home/BookSection.astro";
+import MottoMarquee from "@/components/home/MottoMarquee.astro";
+import ContactCta from "@/components/shared/ContactCta.astro";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { Button } from "@/components/ui/Button";
+import { datosHome } from "@/api/home";
+import { BOOK_URL } from "@/constants/site";
+import poster from "@/assets/libro.webp";
+
+const { libro, autora, cortometraje } = datosHome;
+---
+
+<Layout
+  facet="escritora"
+  title="Escritora"
+  description={`Mónica Martínez, autora de «${libro.titulo}». ${libro.descripcion}`}
+>
+  <FacetHero
+    facet="escritora"
+    title="Escribo lo que"
+    accent="normalmente se calla"
+    description="Cuentos sobre mujeres, pérdidas, vínculos y verdades incómodas. Historias honestas para quien necesita sentirse nombrada."
+  >
+    <Button href={BOOK_URL} target="_blank" rel="noopener noreferrer" size="lg">Cómpralo en Amazon</Button>
+    <Button href="#libro" variant="outline" size="lg">Sobre el libro</Button>
+  </FacetHero>
+
+  <MottoMarquee phrases={[libro.titulo, "Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"]} />
+
+  <BookSection book={libro} author={autora} href={BOOK_URL} />
+
+  <!-- Puente hacia la faceta de productora: se tiñe con su propio color -->
+  <section class="px-4 pt-24 md:px-8 md:pt-36" data-facet="productora">
+    <ScrollReveal client:visible blur className="mx-auto max-w-6xl">
+      <a
+        href="/productora"
+        class="group relative isolate grid overflow-hidden rounded-[2rem] bg-primary text-on-primary shadow-[0_40px_80px_-40px] shadow-primary/70 transition-[translate,scale] duration-700 ease-apple hover:-translate-y-1 active:scale-[0.99] md:grid-cols-12 md:rounded-[2.5rem]"
+      >
+        <div class="relative aspect-[16/10] overflow-hidden md:col-span-5 md:aspect-auto">
+          <Image
+            src={poster}
+            alt={`Póster del cortometraje «${cortometraje.titulo}»`}
+            widths={[480, 720]}
+            sizes="(min-width: 768px) 40vw, 100vw"
+            class="size-full object-cover transition-transform duration-[1.6s] ease-apple group-hover:scale-105"
+          />
+        </div>
+        <div class="flex flex-col justify-center gap-5 p-8 md:col-span-7 md:p-14">
+          <p class="text-[0.65rem] tracking-[0.3em] uppercase opacity-75 md:text-xs">Del libro a la pantalla</p>
+          <h2 class="font-serif text-4xl leading-[1.02] font-light md:text-5xl">
+            Uno de mis cuentos <em>se volvió cortometraje</em>
+          </h2>
+          <p class="max-w-md text-sm leading-relaxed opacity-85 md:text-base">
+            «{cortometraje.titulo}» — {cortometraje.descripcion}
+          </p>
+          <span class="mt-2 flex items-center gap-2 text-[0.7rem] font-medium tracking-[0.22em] uppercase">
+            Ver en Productora
+            <svg viewBox="0 0 24 24" class="size-4 transition-transform duration-500 ease-apple group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-5-5m5 5-5 5"></path>
+            </svg>
+          </span>
+        </div>
+      </a>
+    </ScrollReveal>
+  </section>
+
+  <FacetGrid exclude="escritora" eyebrow="Explora" title="Otras " accent="facetas" description="" />
+
+  <ContactCta
+    eyebrow="Presentaciones y prensa"
+    title="Llevemos el libro "
+    accent="a tu foro"
+    description="Presentaciones, clubes de lectura, entrevistas y talleres de escritura."
+  />
+</Layout>

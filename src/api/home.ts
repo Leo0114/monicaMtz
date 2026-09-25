@@ -22,12 +22,21 @@ export interface SerieContenido {
   descripcion: string;
 }
 
+/** Programa de YouTube con identidad propia (logo y color). */
+export interface Programa {
+  id: "se-dijo-y-punto" | "eso-no-se-dice" | "tu-turno";
+  nombre: string;
+  descripcion: string;
+  formato: string;
+}
+
 export interface DatosHome {
   autora: string;
   lema: string;
   libro: Libro;
   cortometraje: Cortometraje;
   series: SerieContenido[];
+  programas: Programa[];
   plataformasSociales: string[];
 }
 
@@ -66,6 +75,28 @@ export const datosHome: DatosHome = {
     {
       nombre: "Giveaways",
       descripcion: "Dinámicas mensuales para la comunidad.",
+    },
+  ],
+  programas: [
+    {
+      id: "se-dijo-y-punto",
+      nombre: "Se dijo y punto",
+      descripcion:
+        "Opiniones claras y sin rodeos sobre los temas que todas comentamos, pero pocas se atreven a decir en voz alta.",
+      formato: "Opinión",
+    },
+    {
+      id: "eso-no-se-dice",
+      nombre: "Eso no se dice, pero…",
+      descripcion: "Diálogos íntimos que nacen de lo que normalmente se calla.",
+      formato: "Conversación",
+    },
+    {
+      id: "tu-turno",
+      nombre: "Tu Turno",
+      descripcion:
+        "Espacio de movimiento y bienestar con rutinas creadas por Mony para entrenar en el gimnasio o desde casa.",
+      formato: "Bienestar",
     },
   ],
   plataformasSociales: [

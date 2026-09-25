@@ -33,6 +33,116 @@
   color-scheme: dark;
 }
 
+/* ─── Facetas ──────────────────────────────────────────────────────
+   Cada faceta redefine los mismos tokens, así todos los componentes
+   (Button, SectionHeading, Gallery…) adoptan su color sin cambios.
+   Se aplica en <html data-facet> por página, o en cualquier elemento
+   para teñir sólo esa pieza (p. ej. las tarjetas de FacetGrid). */
+
+/* Pintora: Turquesa */
+[data-facet="pintora"] {
+  --mm-primary: #0e7c77;
+  --mm-primary-soft: #3fa9a1;
+  --mm-on-primary: #f6fbfa;
+  --mm-bg: #e9f4f2;
+  --mm-surface: #f6fbfa;
+  --mm-ink: #10302d;
+  --mm-muted: #4b6a66;
+  --mm-line: rgb(14 124 119 / 0.18);
+  --mm-glass: rgb(233 244 242 / 0.72);
+}
+
+.dark[data-facet="pintora"],
+.dark [data-facet="pintora"] {
+  --mm-primary: #5fd3c8;
+  --mm-primary-soft: #3c9c93;
+  --mm-on-primary: #06201e;
+  --mm-bg: #0c1917;
+  --mm-surface: #13231f;
+  --mm-ink: #e9f4f2;
+  --mm-muted: #93b5b0;
+  --mm-line: rgb(233 244 242 / 0.12);
+  --mm-glass: rgb(12 25 23 / 0.7);
+}
+
+/* Escritora: Carmín, tomado de la portada del libro */
+[data-facet="escritora"] {
+  --mm-primary: #b3242f;
+  --mm-primary-soft: #d9606a;
+  --mm-on-primary: #fcf6f5;
+  --mm-bg: #f7ecea;
+  --mm-surface: #fcf6f5;
+  --mm-ink: #2d1414;
+  --mm-muted: #7a5352;
+  --mm-line: rgb(179 36 47 / 0.18);
+  --mm-glass: rgb(247 236 234 / 0.72);
+}
+
+.dark[data-facet="escritora"],
+.dark [data-facet="escritora"] {
+  --mm-primary: #f2837f;
+  --mm-primary-soft: #c4605e;
+  --mm-on-primary: #2a0b0d;
+  --mm-bg: #1a0f0f;
+  --mm-surface: #251617;
+  --mm-ink: #f7ecea;
+  --mm-muted: #c49f9c;
+  --mm-line: rgb(247 236 234 / 0.12);
+  --mm-glass: rgb(26 15 15 / 0.7);
+}
+
+/* Productora: Cobalto cinematográfico */
+[data-facet="productora"] {
+  --mm-primary: #3148c9;
+  --mm-primary-soft: #6f82e3;
+  --mm-on-primary: #f6f7fd;
+  --mm-bg: #ebeefa;
+  --mm-surface: #f6f7fd;
+  --mm-ink: #151a36;
+  --mm-muted: #535a7d;
+  --mm-line: rgb(49 72 201 / 0.18);
+  --mm-glass: rgb(235 238 250 / 0.72);
+}
+
+.dark[data-facet="productora"],
+.dark [data-facet="productora"] {
+  --mm-primary: #97a8ff;
+  --mm-primary-soft: #6b7bd0;
+  --mm-on-primary: #0d1233;
+  --mm-bg: #0e1121;
+  --mm-surface: #161a2f;
+  --mm-ink: #eceffb;
+  --mm-muted: #9ca3c6;
+  --mm-line: rgb(236 239 251 / 0.12);
+  --mm-glass: rgb(14 17 33 / 0.7);
+}
+
+/* Creadora: Fucsia */
+[data-facet="creadora"] {
+  --mm-primary: #c02676;
+  --mm-primary-soft: #e05aa0;
+  --mm-on-primary: #fdf6fa;
+  --mm-bg: #f9ecf3;
+  --mm-surface: #fdf6fa;
+  --mm-ink: #321226;
+  --mm-muted: #7c5169;
+  --mm-line: rgb(192 38 118 / 0.18);
+  --mm-glass: rgb(249 236 243 / 0.72);
+}
+
+.dark[data-facet="creadora"],
+.dark [data-facet="creadora"] {
+  --mm-primary: #f58bc2;
+  --mm-primary-soft: #c9679b;
+  --mm-on-primary: #2c0a1d;
+  --mm-bg: #1b0f16;
+  --mm-surface: #261621;
+  --mm-ink: #f9ecf3;
+  --mm-muted: #c79db4;
+  --mm-line: rgb(249 236 243 / 0.12);
+  --mm-glass: rgb(27 15 22 / 0.7);
+}
+
 @theme inline {
   --color-primary: var(--mm-primary);
   --color-primary-soft: var(--mm-primary-soft);
@@ -127,7 +237,10 @@ html.lenis body {
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :root {
+  :root,
+  [data-facet],
+  .dark[data-facet],
+  .dark [data-facet] {
     --mm-glass: var(--mm-bg);
   }
 }

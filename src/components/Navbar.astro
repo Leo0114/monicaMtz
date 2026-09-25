@@ -4,10 +4,16 @@ import faceLogo from "@/assets/logo.png";
 import ThemeToggle from "@/components/shared/ThemeToggle.astro";
 import MobileMenu from "@/components/MobileMenu";
 import SocialIcon from "@/components/shared/SocialIcon";
-import { NAV_LINKS, SITE, SOCIAL_LINKS } from "@/constants/site";
+import { ALL_LINKS, FACETS, NAV_LINKS, SITE, SOCIAL_LINKS } from "@/constants/site";
 
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isActive = (href: string) => currentPath === href;
+const inFacet = FACETS.some((f) => isActive(f.href));
+const [home, contact] = NAV_LINKS;
+const linkClass =
+  "group relative py-2 text-[0.7rem] font-medium tracking-[0.22em] text-muted uppercase transition-colors duration-500 hover:text-ink aria-[current=page]:text-ink";
+const underlineClass =
+  "absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-primary transition-transform duration-500 ease-apple group-hover:scale-x-100 group-aria-[current=page]:scale-x-100";
 ---
 
 <header
@@ -63,20 +69,72 @@ const isActive = (href: string) => currentPath === href;
 
     <div class="hidden items-center gap-6 md:flex md:justify-self-end lg:gap-8">
       <ul class="flex items-center gap-5 lg:gap-7">
-        {
-          NAV_LINKS.map(({ label, href }) => (
-            <li>
-              <a
-                href={href}
-                aria-current={isActive(href) ? "page" : undefined}
-                class="group relative py-2 text-[0.7rem] font-medium tracking-[0.22em] text-muted uppercase transition-colors duration-500 hover:text-ink aria-[current=page]:text-ink"
-              >
-                {label}
-                <span class="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-primary transition-transform duration-500 ease-apple group-hover:scale-x-100 group-aria-[current=page]:scale-x-100" />
-              </a>
-            </li>
-          ))
-        }
+        <li>
+          <a href={home.href} aria-current={isActive(home.href) ? "page" : undefined} class={linkClass}>
+            {home.label}
+            <span class={underlineClass}></span>
+          </a>
+        </li>
+
+        <!-- Facetas: el panel nace del propio botón (transform-origin arriba) -->
+        <li class="relative">
+          <button
+            type="button"
+            data-facets-trigger
+            aria-expanded="false"
+            aria-controls="facets-menu"
+            aria-current={inFacet ? "page" : undefined}
+            class:list={[linkClass, "flex cursor-pointer items-center gap-1.5"]}
+          >
+            Facetas
+            <svg
+              viewBox="0 0 24 24"
+              class="size-3 transition-transform duration-500 ease-apple group-aria-expanded:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"></path>
+            </svg>
+            <span class={underlineClass}></span>
+          </button>
+
+          <div
+            id="facets-menu"
+            data-open="false"
+            class="absolute top-full left-1/2 mt-4 w-96 origin-top -translate-x-1/2 rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_60px_-24px] shadow-black/30 transition-[opacity,scale,translate,visibility] duration-500 ease-apple data-[open=false]:invisible data-[open=false]:-translate-y-1 data-[open=false]:scale-95 data-[open=false]:opacity-0"
+          >
+            <ul class="flex flex-col">
+              {
+                FACETS.map((facet) => (
+                  <li data-facet={facet.id}>
+                    <a
+                      href={facet.href}
+                      aria-current={isActive(facet.href) ? "page" : undefined}
+                      class="group/item flex items-center gap-4 rounded-2xl p-3 transition-colors duration-300 hover:bg-primary/10 active:scale-[0.98] aria-[current=page]:bg-primary/10"
+                    >
+                      <span class="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-on-primary shadow-md shadow-primary/30 transition-transform duration-500 ease-apple group-hover/item:scale-110 group-hover/item:-rotate-6">
+                        <span class="font-serif text-lg leading-none italic">{facet.label[0]}</span>
+                      </span>
+                      <span class="flex min-w-0 flex-col">
+                        <span class="font-serif text-xl leading-tight text-ink">{facet.label}</span>
+                        <span class="truncate text-xs text-muted">{facet.tagline}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </li>
+
+        <li>
+          <a href={contact.href} aria-current={isActive(contact.href) ? "page" : undefined} class={linkClass}>
+            {contact.label}
+            <span class={underlineClass}></span>
+          </a>
+        </li>
       </ul>
       <span class="h-5 w-px bg-line" aria-hidden="true"></span>
       <ThemeToggle />
@@ -84,7 +142,7 @@ const isActive = (href: string) => currentPath === href;
 
     <div class="flex items-center gap-3 md:hidden">
       <ThemeToggle />
-      <MobileMenu client:media="(max-width: 767px)" links={NAV_LINKS} socials={SOCIAL_LINKS} currentPath={currentPath} />
+      <MobileMenu client:media="(max-width: 767px)" links={ALL_LINKS} socials={SOCIAL_LINKS} currentPath={currentPath} />
     </div>
   </nav>
 </header>
@@ -97,4 +155,22 @@ const isActive = (href: string) => currentPath === href;
   };
   window.addEventListener("scroll", update, { passive: true });
   document.addEventListener("astro:page-load", update);
+
+  // Menú de facetas: delegación en document para sobrevivir a los swaps del ClientRouter.
+  const setFacetsOpen = (open: boolean) => {
+    document.getElementById("facets-menu")?.setAttribute("data-open", String(open));
+    document.querySelector("[data-facets-trigger]")?.setAttribute("aria-expanded", String(open));
+  };
+  const isFacetsOpen = () => document.getElementById("facets-menu")?.dataset.open === "true";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    if (target?.closest("[data-facets-trigger]")) setFacetsOpen(!isFacetsOpen());
+    else if (!target?.closest("#facets-menu") || target.closest("a")) setFacetsOpen(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !isFacetsOpen()) return;
+    setFacetsOpen(false);
+    document.querySelector<HTMLElement>("[data-facets-trigger]")?.focus();
+  });
 </script>

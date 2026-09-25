@@ -1,0 +1,72 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import FacetHero from "@/components/facets/FacetHero.astro";
+import FacetGrid from "@/components/facets/FacetGrid.astro";
+import ProgramsSection from "@/components/facets/ProgramsSection.astro";
+import SocialSection from "@/components/home/SocialSection.astro";
+import ContactCta from "@/components/shared/ContactCta.astro";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import YouTubeEmbed from "@/components/shared/YouTubeEmbed.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { Button } from "@/components/ui/Button";
+import { datosHome } from "@/api/home";
+import { FILM_VIDEO_ID } from "@/constants/site";
+
+const { programas, cortometraje } = datosHome;
+const ring = programas.map((p) => p.nombre).join(" · ") + " · ";
+---
+
+<Layout
+  facet="creadora"
+  title="Creadora de contenido"
+  description="Se dijo y punto, Eso no se dice pero… y Tu Turno: los programas de Mónica Martínez en YouTube y redes."
+>
+  <FacetHero
+    facet="creadora"
+    title="Contenido que"
+    accent="se siente"
+    description="Programas con identidad propia, clips diarios y una comunidad que crece desde la verdad. Episodios completos todos los viernes."
+    ringText={ring}
+  >
+    <Button href="#programas" size="lg">Ver programas</Button>
+    <Button href="#redes" variant="outline" size="lg">Sígueme</Button>
+  </FacetHero>
+
+  <ProgramsSection programs={programas} />
+
+  <section class="px-4 py-24 md:px-8 md:py-36">
+    <div class="mx-auto flex max-w-6xl flex-col gap-14 md:gap-20">
+      <SectionHeading
+        eyebrow="Creación original"
+        title="Mi primer cortometraje: "
+        accent={cortometraje.titulo}
+        description="Escrito, producido y creado desde cero. Una historia de mi libro llevada a la pantalla."
+      />
+      <ScrollReveal client:visible blur>
+        <YouTubeEmbed id={FILM_VIDEO_ID} title={cortometraje.titulo} />
+      </ScrollReveal>
+      <a
+        href="/productora"
+        class="group inline-flex items-center gap-2 self-start text-[0.7rem] font-medium tracking-[0.22em] text-primary uppercase"
+      >
+        <span class="border-b border-primary/30 pb-1 transition-colors duration-500 group-hover:border-primary">
+          Detrás de la producción
+        </span>
+        <svg viewBox="0 0 24 24" class="size-4 transition-transform duration-500 ease-apple group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-5-5m5 5-5 5"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <SocialSection />
+
+  <FacetGrid exclude="creadora" eyebrow="Explora" title="Otras " accent="facetas" description="" />
+
+  <ContactCta
+    eyebrow="Marcas y colaboraciones"
+    title="Contemos tu marca "
+    accent="con voz propia"
+    description="Integraciones en programas, contenido para redes y dinámicas con la comunidad."
+  />
+</Layout>

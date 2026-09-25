@@ -1,0 +1,70 @@
+---
+/**
+ * Fachada de YouTube: muestra la miniatura y sólo carga el iframe al hacer clic.
+ * Ahorra ~1 MB de JavaScript de terceros hasta que alguien de verdad quiere ver el video.
+ */
+interface Props {
+  id: string;
+  title: string;
+  class?: string;
+}
+
+const { id, title, class: className = "" } = Astro.props;
+const thumb = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+const fallback = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+---
+
+<div
+  data-yt={id}
+  data-yt-title={title}
+  class:list={[
+    "group relative aspect-video overflow-hidden rounded-[1.75rem] bg-black shadow-[0_50px_100px_-50px] shadow-primary/70 md:rounded-[2.25rem]",
+    className,
+  ]}
+>
+  <img
+    src={thumb}
+    alt=""
+    loading="lazy"
+    decoding="async"
+    onerror={`this.onerror=null;this.src='${fallback}'`}
+    class="absolute inset-0 size-full object-cover opacity-85 transition-[scale,opacity] duration-[1.4s] ease-apple group-hover:scale-[1.03] group-hover:opacity-100"
+  />
+  <span aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent"></span>
+
+  <button
+    type="button"
+    data-yt-play
+    aria-label={`Reproducir «${title}»`}
+    class="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-5 text-white"
+  >
+    <span
+      class="grid size-18 place-items-center rounded-full bg-white/20 ring-1 ring-white/40 backdrop-blur-xl transition-[scale,background-color] duration-500 ease-apple group-hover:scale-110 group-hover:bg-primary group-active:scale-95 md:size-24"
+    >
+      <svg viewBox="0 0 24 24" class="ml-1 size-7 md:size-9" fill="currentColor" aria-hidden="true">
+        <path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l10.9-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14Z"></path>
+      </svg>
+    </span>
+    <span class="absolute bottom-5 left-6 max-w-[80%] text-left font-serif text-xl leading-tight md:bottom-8 md:left-9 md:text-3xl">
+      {title}
+    </span>
+  </button>
+</div>
+
+<script>
+  // Delegación: funciona tras cada navegación del ClientRouter sin re-registrar.
+  document.addEventListener("click", (event) => {
+    const button = (event.target as Element | null)?.closest("[data-yt-play]");
+    const host = button?.closest<HTMLElement>("[data-yt]");
+    if (!host) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube-nocookie.com/embed/${host.dataset.yt}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.title = host.dataset.ytTitle ?? "Video de YouTube";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    iframe.className = "absolute inset-0 size-full";
+    host.replaceChildren(iframe);
+    iframe.focus();
+  });
+</script>

@@ -5,25 +5,28 @@ import { SEO } from "astro-seo";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/Footer.astro";
 import ScrollTop from "@/components/shared/ScrollTop.astro";
-import { SITE } from "@/constants/site";
+import { FACETS, SITE, type FacetId } from "@/constants/site";
 
 interface Props {
   title?: string;
   description?: string;
+  /** Tiñe toda la página (navbar y footer incluidos) con la paleta de la faceta. */
+  facet?: FacetId;
 }
 
-const { title, description = SITE.description } = Astro.props;
+const { title, description = SITE.description, facet } = Astro.props;
+const themeColor = FACETS.find((f) => f.id === facet)?.themeColor ?? "#f3e9dd";
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · Si yo puedo, tú también`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 const ogImage = new URL("/logo.png", Astro.site ?? SITE.url).href;
 ---
 
 <!doctype html>
-<html lang="es-MX">
+<html lang="es-MX" data-facet={facet}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f3e9dd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={themeColor} media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/webp" href="/ico.webp" />
     <meta name="generator" content={Astro.generator} />

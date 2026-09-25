@@ -1,0 +1,45 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import FacetHero from "@/components/facets/FacetHero.astro";
+import FacetGrid from "@/components/facets/FacetGrid.astro";
+import Gallery from "@/components/shared/Gallery.astro";
+import MottoMarquee from "@/components/home/MottoMarquee.astro";
+import ContactCta from "@/components/shared/ContactCta.astro";
+import { Button } from "@/components/ui/Button";
+---
+
+<Layout
+  facet="pintora"
+  title="Pintora"
+  description="La obra plástica de Mónica Martínez: color, textura y memoria sobre lienzo."
+>
+  <FacetHero
+    facet="pintora"
+    title="Lo que no cabe en palabras,"
+    accent="lo pinto"
+    description="La pintura es mi otra forma de escribir: trazos, manchas y color para decir lo que a veces no encuentra su frase."
+  >
+    <Button href="#obra" size="lg">Ver la obra</Button>
+    <Button href="/contacto" variant="outline" size="lg">Encargar una pieza</Button>
+  </FacetHero>
+
+  <MottoMarquee phrases={["Color", "Textura", "Memoria", "Cada trazo cuenta algo"]} />
+
+  <section id="obra" class="scroll-mt-24 px-4 py-24 md:px-8 md:py-36">
+    <Gallery
+      name="images/gal/temp"
+      eyebrow="Galería"
+      title="Obra reciente"
+      class="mx-auto max-w-6xl"
+    />
+  </section>
+
+  <FacetGrid exclude="pintora" eyebrow="Explora" title="Otras " accent="facetas" description="" />
+
+  <ContactCta
+    eyebrow="Encargos y exposiciones"
+    title="¿Una pieza para tu espacio? "
+    accent="Pintémosla juntas"
+    description="Obra original, encargos personalizados y colaboraciones con galerías o marcas."
+  />
+</Layout>

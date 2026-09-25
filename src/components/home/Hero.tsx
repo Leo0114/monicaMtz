@@ -70,7 +70,7 @@ export default function Hero({ name, motto, portraitSrc, faceSrc, bookHref }: He
               className="flex items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] text-primary uppercase md:text-xs"
             >
               <span className="h-px w-8 bg-primary" aria-hidden="true" />
-              Escritora · Creadora · Monterrey
+              Pintora · Escritora · Productora · Creadora
             </motion.p>
 
             <h1 className="font-serif text-[clamp(3.25rem,13vw,7.5rem)] leading-[0.92] font-light tracking-[-0.03em] text-ink">

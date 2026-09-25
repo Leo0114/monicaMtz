@@ -1,0 +1,156 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import placeholder from "@/assets/realLogo.jpeg";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { FACETS, type FacetId } from "@/constants/site";
+
+/**
+ * Hero de cada faceta. Misma retícula que el Hero de inicio, pero cada faceta
+ * enmarca su imagen con una forma propia: lienzo, libro, pantalla o círculo.
+ */
+interface Props {
+  facet: FacetId;
+  title: string;
+  /** Parte final del título, en itálica y con el color de la faceta. */
+  accent: string;
+  description: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** Texto que gira alrededor de la imagen circular (sólo `creadora`). */
+  ringText?: string;
+}
+
+const {
+  facet,
+  title,
+  accent,
+  description,
+  image = placeholder,
+  imageAlt = "Mónica Martínez",
+  ringText = "",
+} = Astro.props;
+
+const index = FACETS.findIndex((f) => f.id === facet);
+const { label } = FACETS[index];
+
+const FRAMES: Record<FacetId, string> = {
+  pintora: "aspect-[4/5] rounded-[1.25rem] border-[10px] border-surface -rotate-2 md:border-[14px]",
+  escritora: "aspect-[2/3] rounded-l-md rounded-r-[1.75rem] md:mx-auto md:max-w-[22rem]",
+  productora: "aspect-[4/3] rounded-[1.75rem]",
+  creadora: "aspect-square rounded-full",
+};
+---
+
+<section class="relative isolate overflow-hidden px-4 pt-32 pb-16 md:px-8 md:pt-44 md:pb-28">
+  <!-- Halos de color: aquí es donde la faceta se siente más viva -->
+  <div
+    aria-hidden="true"
+    class="absolute -top-32 -right-24 -z-10 size-[26rem] rounded-full bg-primary/25 blur-3xl md:size-[44rem]"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute -bottom-48 -left-32 -z-10 size-[22rem] rounded-full bg-primary-soft/20 blur-3xl md:size-[32rem]"
+  >
+  </div>
+
+  <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-12 md:gap-10">
+    <div class="order-2 flex flex-col gap-7 md:order-1 md:col-span-7">
+      <ScrollReveal client:load>
+        <nav aria-label="Ruta" class="mb-6">
+          <ol class="flex items-center gap-2 text-[0.65rem] font-medium tracking-[0.3em] uppercase md:text-xs">
+            <li>
+              <a href="/" class="text-muted transition-colors duration-300 hover:text-ink">Inicio</a>
+            </li>
+            <li aria-hidden="true" class="h-px w-6 bg-primary"></li>
+            <li aria-current="page" class="text-primary">
+              Faceta 0{index + 1} · {label}
+            </li>
+          </ol>
+        </nav>
+        <h1 class="font-serif text-[clamp(3rem,10vw,6.5rem)] leading-[0.95] font-light tracking-[-0.03em] text-ink">
+          {title}
+          <em class="block text-primary">{accent}</em>
+        </h1>
+      </ScrollReveal>
+
+      <ScrollReveal client:load delay={0.15}>
+        <p class="max-w-lg text-base leading-relaxed text-muted md:text-lg">{description}</p>
+      </ScrollReveal>
+
+      {
+        Astro.slots.has("default") && (
+          <ScrollReveal client:load delay={0.25} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <slot />
+          </ScrollReveal>
+        )
+      }
+    </div>
+
+    <ScrollReveal
+      client:load
+      blur
+      direction="none"
+      duration={1.4}
+      className="relative order-1 mx-auto w-full max-w-[16rem] sm:max-w-[20rem] md:order-2 md:col-span-5 md:max-w-none"
+    >
+      <figure
+        class:list={[
+          "relative overflow-hidden bg-surface shadow-[0_50px_90px_-45px] shadow-primary/60",
+          FRAMES[facet],
+        ]}
+      >
+        <Image
+          src={image}
+          alt={imageAlt}
+          widths={[420, 720, 960]}
+          sizes="(min-width: 768px) 40vw, 80vw"
+          loading="eager"
+          fetchpriority="high"
+          class="size-full object-cover"
+        />
+        {
+          facet === "escritora" && (
+            <span
+              aria-hidden="true"
+              class="absolute inset-y-0 left-0 w-5 bg-linear-to-r from-black/35 via-white/10 to-transparent"
+            />
+          )
+        }
+        {
+          facet === "productora" && (
+            <span aria-hidden="true" class="absolute inset-4 md:inset-6">
+              <span class="absolute top-0 left-0 size-6 border-t-2 border-l-2 border-primary/70" />
+              <span class="absolute top-0 right-0 size-6 border-t-2 border-r-2 border-primary/70" />
+              <span class="absolute bottom-0 left-0 size-6 border-b-2 border-l-2 border-primary/70" />
+              <span class="absolute right-0 bottom-0 size-6 border-r-2 border-b-2 border-primary/70" />
+              <span class="absolute top-1 left-10 flex items-center gap-2 text-[0.6rem] font-medium tracking-[0.25em] text-primary uppercase">
+                <span class="size-2 animate-pulse rounded-full bg-red-500" />
+                Rec
+              </span>
+            </span>
+          )
+        }
+        <span aria-hidden="true" class="absolute inset-0 rounded-[inherit] ring-1 ring-white/20 ring-inset"></span>
+      </figure>
+
+      {
+        facet === "creadora" && ringText && (
+          <svg
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+            class="pointer-events-none absolute -inset-6 size-[calc(100%+3rem)] animate-[spin_40s_linear_infinite] text-primary md:-inset-8 md:size-[calc(100%+4rem)]"
+          >
+            <defs>
+              <path id="facet-ring" d="M50,50 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0" />
+            </defs>
+            <text class="fill-current font-sans text-[4.2px] tracking-[0.3em] uppercase">
+              <textPath href="#facet-ring">{ringText}</textPath>
+            </text>
+          </svg>
+        )
+      }
+    </ScrollReveal>
+  </div>
+</section>

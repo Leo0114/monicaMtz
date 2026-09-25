@@ -87,8 +87,8 @@ export default function MobileMenu({
                 }}
                 transition={{ duration: 0.7, ease: EASE_APPLE }}
               >
-                <ul className="flex flex-col gap-2">
-                  {links.map(({ label, href }, i) => (
+                <ul className="flex flex-col gap-1">
+                  {links.map(({ label, href, facet }, i) => (
                     <motion.li
                       key={href}
                       initial={{ opacity: 0, y: 24 }}
@@ -103,12 +103,19 @@ export default function MobileMenu({
                         href={href}
                         onClick={() => setOpen(false)}
                         aria-current={currentPath === href ? "page" : undefined}
-                        className="flex items-baseline gap-4 py-2 font-serif text-5xl text-ink/60 transition-colors active:text-primary aria-[current=page]:text-ink"
+                        data-facet={facet}
+                        className="flex items-center gap-4 py-1.5 font-serif text-4xl leading-tight text-ink/60 transition-colors active:text-primary aria-[current=page]:text-ink"
                       >
-                        <span className="font-sans text-xs tracking-widest text-primary">
+                        <span className="w-5 font-sans text-xs tracking-widest text-primary">
                           0{i + 1}
                         </span>
                         {label}
+                        {facet && (
+                          <span
+                            aria-hidden="true"
+                            className="size-2 shrink-0 rounded-full bg-primary"
+                          />
+                        )}
                       </a>
                     </motion.li>
                   ))}

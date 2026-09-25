@@ -10,9 +10,12 @@ interface Props {
   book: Libro;
   author: string;
   href: string;
+  /** Enlace opcional a la faceta completa (se usa desde el inicio). */
+  moreHref?: string;
+  moreLabel?: string;
 }
 
-const { book, author, href } = Astro.props;
+const { book, author, href, moreHref, moreLabel = "Conoce a la escritora" } = Astro.props;
 const cover = await getImage({ src: coverImage, width: 720, format: "webp" });
 
 const HIGHLIGHTS = ["Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"];
@@ -56,6 +59,20 @@ const HIGHLIGHTS = ["Mujeres", "Pérdidas", "Vínculos", "Verdades incómodas"];
         </Button>
         <p class="text-xs tracking-wide text-muted">Disponible en Amazon México</p>
       </ScrollReveal>
+
+      {
+        moreHref && (
+          <a
+            href={moreHref}
+            class="group inline-flex items-center gap-2 self-start text-[0.7rem] font-medium tracking-[0.22em] text-primary uppercase"
+          >
+            <span class="border-b border-primary/30 pb-1 transition-colors duration-500 group-hover:border-primary">{moreLabel}</span>
+            <svg viewBox="0 0 24 24" class="size-4 transition-transform duration-500 ease-apple group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-5-5m5 5-5 5" />
+            </svg>
+          </a>
+        )
+      }
     </div>
   </div>
 </section>

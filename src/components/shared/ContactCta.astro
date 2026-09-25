@@ -2,6 +2,21 @@
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import { Button } from "@/components/ui/Button";
 import { CONTACT } from "@/constants/site";
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  /** Final del título, en itálica. */
+  accent?: string;
+  description?: string;
+}
+
+const {
+  eyebrow = "Colaboraciones y prensa",
+  title = "Creemos juntas algo ",
+  accent = "que valga la pena contar",
+  description = "Marcas, medios, eventos o proyectos con propósito: me encantará escucharte.",
+} = Astro.props;
 ---
 
 <section class="px-4 md:px-8">
@@ -24,12 +39,12 @@ import { CONTACT } from "@/constants/site";
         ></path>
       </svg>
 
-      <p class="text-[0.65rem] tracking-[0.3em] uppercase opacity-70 md:text-xs">Colaboraciones y prensa</p>
+      <p class="text-[0.65rem] tracking-[0.3em] uppercase opacity-70 md:text-xs">{eyebrow}</p>
       <h2 class="mx-auto mt-5 max-w-3xl font-serif text-4xl leading-[1.02] font-light md:text-6xl">
-        Creemos juntas algo <em>que valga la pena contar</em>.
+        {title}<em>{accent}</em>.
       </h2>
       <p class="mx-auto mt-6 max-w-lg text-sm leading-relaxed opacity-80 md:text-base">
-        Marcas, medios, eventos o proyectos con propósito: me encantará escucharte.
+        {description}
       </p>
       <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Button

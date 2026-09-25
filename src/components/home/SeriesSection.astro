@@ -5,9 +5,11 @@ import type { SerieContenido } from "@/api/home";
 
 interface Props {
   series: SerieContenido[];
+  moreHref?: string;
+  moreLabel?: string;
 }
 
-const { series } = Astro.props;
+const { series, moreHref, moreLabel = "Ver todos los programas" } = Astro.props;
 ---
 
 <section id="contenido-series" class="relative bg-surface px-4 py-24 md:px-8 md:py-36">
@@ -42,5 +44,19 @@ const { series } = Astro.props;
         ))
       }
     </ul>
+
+    {
+      moreHref && (
+        <a
+          href={moreHref}
+          class="group inline-flex items-center gap-2 self-start text-[0.7rem] font-medium tracking-[0.22em] text-primary uppercase"
+        >
+          <span class="border-b border-primary/30 pb-1 transition-colors duration-500 group-hover:border-primary">{moreLabel}</span>
+          <svg viewBox="0 0 24 24" class="size-4 transition-transform duration-500 ease-apple group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-5-5m5 5-5 5" />
+          </svg>
+        </a>
+      )
+    }
   </div>
 </section>

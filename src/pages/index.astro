@@ -9,6 +9,7 @@ import FilmSection from "@/components/home/FilmSection.astro";
 import SeriesSection from "@/components/home/SeriesSection.astro";
 import SocialSection from "@/components/home/SocialSection.astro";
 import GallerySlider from "@/components/home/GallerySlider.astro";
+import FacetGrid from "@/components/facets/FacetGrid.astro";
 import ContactCta from "@/components/shared/ContactCta.astro";
 import { datosHome } from "@/api/home";
 import { BOOK_URL } from "@/constants/site";
@@ -34,9 +35,10 @@ const [motto] = datosHome.lema.split(" - ");
   />
   <MottoMarquee phrases={["Si yo puedo, tú también", "Primero ser y después tener", "El arte de mentirnos"]} />
   <AboutSection />
-  <BookSection book={datosHome.libro} author={datosHome.autora} href={BOOK_URL} />
-  <FilmSection film={datosHome.cortometraje} />
-  <SeriesSection series={datosHome.series} />
+  <FacetGrid />
+  <BookSection book={datosHome.libro} author={datosHome.autora} href={BOOK_URL} moreHref="/escritora" />
+  <FilmSection film={datosHome.cortometraje} moreHref="/productora" moreLabel="Conoce a la productora" />
+  <SeriesSection series={datosHome.series} moreHref="/creadora-de-contenido" />
   <SocialSection />
   <GallerySlider />
   <ContactCta />
