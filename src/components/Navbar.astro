@@ -9,7 +9,9 @@ import { ALL_LINKS, FACETS, NAV_LINKS, SITE, SOCIAL_LINKS } from "@/constants/si
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isActive = (href: string) => currentPath === href;
 const inFacet = FACETS.some((f) => isActive(f.href));
-const [home, shop, contact] = NAV_LINKS;
+// «Inicio» (NAV_LINKS[0]) oculto de momento en escritorio: el logo ya lleva a "/".
+// Para restaurarlo: `const [home, shop, contact]` y descomentar su <li> abajo.
+const [, shop, contact] = NAV_LINKS;
 // La tienda sigue activa en el detalle de cada producto (/tienda/<id>).
 const inShop = currentPath === shop.href || currentPath.startsWith(`${shop.href}/`);
 const linkClass =
@@ -25,7 +27,7 @@ const underlineClass =
 >
   <nav
     aria-label="Principal"
-    class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 rounded-full lg:grid lg:grid-cols-[1fr_auto_1fr] border border-transparent px-3 transition-all duration-700 ease-apple group-data-[scrolled=true]/header:border-line group-data-[scrolled=true]/header:bg-glass group-data-[scrolled=true]/header:shadow-[0_8px_32px_-16px] group-data-[scrolled=true]/header:shadow-primary/25 group-data-[scrolled=true]/header:backdrop-blur-xl group-data-[scrolled=true]/header:backdrop-saturate-150 md:h-16 md:px-5"
+    class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 rounded-full lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-10 xl:grid-cols-[1fr_auto_1fr] border border-transparent px-3 transition-all duration-700 ease-apple group-data-[scrolled=true]/header:border-line group-data-[scrolled=true]/header:bg-glass group-data-[scrolled=true]/header:shadow-[0_8px_32px_-16px] group-data-[scrolled=true]/header:shadow-primary/25 group-data-[scrolled=true]/header:backdrop-blur-xl group-data-[scrolled=true]/header:backdrop-saturate-150 md:h-16 md:px-5"
   >
     <a href="/" class="group flex min-w-0 items-center gap-3 lg:justify-self-start" aria-label={`${SITE.name}, inicio`}>
       <span
@@ -47,8 +49,15 @@ const underlineClass =
       </span>
     </a>
 
-    <!-- Redes al centro: lo más importante, siempre a la vista en escritorio -->
-    <ul aria-label="Redes sociales" class="hidden items-center gap-2 lg:flex lg:justify-self-center">
+    <!--
+      Redes al centro: lo más importante, siempre a la vista en escritorio.
+      En lg se centran en el espacio libre (nunca chocan con las rutas); desde xl, al centro exacto.
+      La cápsula las agrupa como un bloque propio, distinto de la navegación.
+    -->
+    <ul
+      aria-label="Redes sociales"
+      class="hidden items-center gap-1.5 rounded-full border border-line p-1 lg:flex lg:justify-self-center"
+    >
       {
         SOCIAL_LINKS.map((social) => (
           <li>
@@ -73,12 +82,14 @@ const underlineClass =
 
     <div class="hidden items-center gap-8 lg:flex lg:justify-self-end">
       <ul class="flex items-center gap-7">
+        {/* Oculto de momento (ver nota arriba); el logo ya lleva a inicio.
         <li>
           <a href={home.href} aria-current={isActive(home.href) ? "page" : undefined} class={linkClass}>
             {home.label}
             <span class={underlineClass}></span>
           </a>
         </li>
+        */}
 
         <!-- Facetas: el panel nace del propio botón (transform-origin arriba) -->
         <li class="relative">

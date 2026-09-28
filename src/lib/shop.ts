@@ -30,8 +30,7 @@ const priceFormatter = new Intl.NumberFormat("es-MX", {
   maximumFractionDigits: 0,
 });
 
-export const formatPrice = (price?: number) =>
-  price === undefined ? "Precio por WhatsApp" : priceFormatter.format(price);
+export const formatPrice = (price: number) => priceFormatter.format(price);
 
 /** La compra se cierra por WhatsApp: el mensaje ya lleva el producto y su enlace. */
 export const whatsappHref = (product: Product, pageUrl: string | URL) => {

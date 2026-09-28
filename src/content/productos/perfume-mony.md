@@ -4,6 +4,7 @@ type: perfume
 excerpt: Notas florales y cálidas con un fondo de vainilla y madera. Un aroma que se queda contigo.
 cover: ../../assets/realLogo.jpeg
 coverAlt: Frasco del perfume Mony Eau de Parfum
+price: 1299
 order: 1
 specs:
   - label: Contenido

@@ -4,6 +4,7 @@ type: zapatos
 excerpt: Zapato de piel con horma cómoda y suela flexible, hecho para acompañarte todo el día.
 cover: ../../assets/realLogo.jpeg
 coverAlt: Par de zapatos Mony Clásico
+price: 1899
 order: 1
 specs:
   - label: Material

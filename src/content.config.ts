@@ -16,8 +16,8 @@ const productos = defineCollection({
       excerpt: z.string(),
       cover: image(),
       coverAlt: z.string(),
-      /** En MXN. Sin precio se muestra «Precio por WhatsApp». */
-      price: z.number().positive().optional(),
+      /** En MXN. */
+      price: z.number().positive(),
       available: z.boolean().default(true),
       order: z.number().int().default(0),
       specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
