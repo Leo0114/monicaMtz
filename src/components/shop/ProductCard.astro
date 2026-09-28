@@ -1,0 +1,71 @@
+---
+import { Image } from "astro:assets";
+import { formatPrice, getLine, transitionNames, type Product } from "@/lib/shop";
+
+/**
+ * Tarjeta única para cualquier producto. La imagen y el nombre comparten
+ * `transition:name` con la página de detalle, así la tarjeta "crece" hacia ella.
+ */
+interface Props {
+  product: Product;
+  /** Sólo la primera fila visible debe cargar con prioridad. */
+  eager?: boolean;
+}
+
+const { product, eager = false } = Astro.props;
+const { title, excerpt, cover, coverAlt, price, available, type } = product.data;
+const line = getLine(type);
+const names = transitionNames(product.id);
+---
+
+<a
+  href={`/tienda/${product.id}`}
+  class="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-line bg-surface p-2.5 shadow-[0_30px_60px_-40px] shadow-primary/50 transition-[translate,box-shadow,scale] duration-700 ease-apple hover:-translate-y-1.5 hover:shadow-[0_40px_70px_-34px] active:scale-[0.985] active:duration-150"
+>
+  <figure
+    transition:name={names.cover}
+    class="relative aspect-[4/5] overflow-hidden rounded-[1.35rem] bg-bgColor"
+  >
+    <Image
+      src={cover}
+      alt={coverAlt}
+      widths={[360, 540, 720]}
+      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+      loading={eager ? "eager" : "lazy"}
+      class="size-full object-cover transition-transform duration-[1.6s] ease-apple group-hover:scale-105"
+    />
+    <!-- Etiqueta de línea: material translúcido sobre la imagen -->
+    <span
+      class="absolute top-3 left-3 rounded-full border border-white/30 bg-glass px-3 py-1.5 text-[0.6rem] font-medium tracking-[0.22em] text-ink uppercase backdrop-blur-md backdrop-saturate-150"
+    >
+      {line.label}
+    </span>
+    {
+      !available && (
+        <span class="absolute top-3 right-3 rounded-full bg-ink px-3 py-1.5 text-[0.6rem] font-medium tracking-[0.22em] text-bgColor uppercase">
+          Agotado
+        </span>
+      )
+    }
+    <span aria-hidden="true" class="absolute inset-0 rounded-[inherit] ring-1 ring-white/20 ring-inset"></span>
+  </figure>
+
+  <div class="flex flex-1 flex-col gap-3 px-3.5 pt-5 pb-4">
+    <h3 class="font-serif text-3xl leading-[1.02] font-light text-ink">
+      <span transition:name={names.title} class="inline-block">{title}</span>
+    </h3>
+    <p class="line-clamp-2 text-sm leading-relaxed text-muted">{excerpt}</p>
+
+    <div class="mt-auto flex items-center justify-between gap-4 pt-4">
+      <span class="text-[0.7rem] font-medium tracking-[0.18em] text-primary uppercase">{formatPrice(price)}</span>
+      <span
+        aria-hidden="true"
+        class="grid size-10 place-items-center rounded-full bg-primary/10 text-primary transition-[rotate,scale,background-color,color] duration-700 ease-apple group-hover:scale-110 group-hover:-rotate-45 group-hover:bg-primary group-hover:text-on-primary"
+      >
+        <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-5-5m5 5-5 5"></path>
+        </svg>
+      </span>
+    </div>
+  </div>
+</a>

@@ -225,6 +225,12 @@ html.lenis body {
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Morph de producto (tarjeta ↔ detalle): misma curva, un poco más largo por el recorrido */
+::view-transition-group(*) {
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* ─── Accesibilidad ────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

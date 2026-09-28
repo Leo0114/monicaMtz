@@ -1,0 +1,158 @@
+---
+import type { GetStaticPaths } from "astro";
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import ProductCard from "@/components/shop/ProductCard.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { Button } from "@/components/ui/Button";
+import {
+  formatPrice,
+  getLine,
+  getProducts,
+  transitionNames,
+  whatsappHref,
+  type Product,
+} from "@/lib/shop";
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const products = await getProducts();
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: {
+      product,
+      // Primero los de la misma línea: son los que más probablemente interesen.
+      related: products
+        .filter((p) => p.id !== product.id)
+        .sort((a, b) => Number(b.data.type === product.data.type) - Number(a.data.type === product.data.type))
+        .slice(0, 3),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  product: Product;
+  related: Product[];
+}
+
+const { product, related } = Astro.props;
+const { title, excerpt, cover, coverAlt, price, available, specs, type } = product.data;
+const { Content } = await render(product);
+const line = getLine(type);
+const names = transitionNames(product.id);
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<Layout title={title} description={excerpt}>
+  <article class="relative isolate overflow-hidden px-4 pt-32 pb-16 md:px-8 md:pt-44 md:pb-28">
+    <div
+      aria-hidden="true"
+      class="absolute -top-32 -left-24 -z-10 size-[26rem] rounded-full bg-primary/20 blur-3xl md:size-[40rem]"
+    >
+    </div>
+
+    <div class="mx-auto grid max-w-6xl items-start gap-10 md:grid-cols-12 md:gap-14">
+      <!-- Imagen y nombre fuera de ScrollReveal: deben estar visibles para la view transition -->
+      <figure
+        transition:name={names.cover}
+        class="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-surface shadow-[0_50px_90px_-45px] shadow-primary/60 md:sticky md:top-28 md:col-span-6"
+      >
+        <Image
+          src={cover}
+          alt={coverAlt}
+          widths={[480, 720, 960, 1200]}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="size-full object-cover"
+        />
+        <span aria-hidden="true" class="absolute inset-0 rounded-[inherit] ring-1 ring-white/20 ring-inset"></span>
+      </figure>
+
+      <div class="flex flex-col gap-8 md:col-span-6 md:pt-4">
+        <nav aria-label="Ruta">
+          <ol class="flex flex-wrap items-center gap-2 text-[0.65rem] font-medium tracking-[0.3em] uppercase md:text-xs">
+            <li>
+              <a href="/tienda" class="text-muted transition-colors duration-300 hover:text-ink">Tienda</a>
+            </li>
+            <li aria-hidden="true" class="h-px w-6 bg-primary"></li>
+            <li>
+              <a href={`/tienda#${line.id}`} class="text-muted transition-colors duration-300 hover:text-ink">
+                {line.label}
+              </a>
+            </li>
+            <li aria-hidden="true" class="h-px w-6 bg-primary"></li>
+            <li aria-current="page" class="text-primary">{title}</li>
+          </ol>
+        </nav>
+
+        <div class="flex flex-col gap-5">
+          <h1 class="font-serif text-[clamp(2.75rem,7vw,5rem)] leading-[0.95] font-light tracking-[-0.03em] text-ink">
+            <span transition:name={names.title} class="inline-block">{title}</span>
+          </h1>
+          <p class="flex items-center gap-3 text-xs font-medium tracking-[0.22em] text-primary uppercase">
+            {formatPrice(price)}
+            {!available && <span class="rounded-full bg-ink px-3 py-1 text-[0.6rem] text-bgColor">Agotado</span>}
+          </p>
+        </div>
+
+        <ScrollReveal client:load delay={0.2}>
+          <p class="max-w-lg text-base leading-relaxed text-muted md:text-lg">{excerpt}</p>
+        </ScrollReveal>
+
+        <ScrollReveal client:load delay={0.3} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button
+            href={whatsappHref(product, pageUrl)}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="lg"
+          >
+            {available ? "Pedir por WhatsApp" : "Avísame cuando vuelva"}
+          </Button>
+          <Button href="/tienda" variant="outline" size="lg">Ver la tienda</Button>
+        </ScrollReveal>
+
+        {
+          specs.length > 0 && (
+            <ScrollReveal client:visible delay={0.1}>
+              <dl class="divide-y divide-line border-y border-line">
+                {specs.map(({ label, value }) => (
+                  <div class="flex items-baseline justify-between gap-6 py-4">
+                    <dt class="text-[0.65rem] font-medium tracking-[0.22em] text-muted uppercase">{label}</dt>
+                    <dd class="text-right text-sm text-ink">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </ScrollReveal>
+          )
+        }
+
+        <ScrollReveal client:visible delay={0.1}>
+          <div class="prose max-w-none text-base leading-relaxed text-muted prose-p:text-muted prose-strong:text-ink">
+            <Content />
+          </div>
+        </ScrollReveal>
+      </div>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="px-4 py-16 md:px-8 md:py-24">
+        <div class="mx-auto flex max-w-6xl flex-col gap-12 md:gap-16">
+          <SectionHeading eyebrow="Tienda" title="También te " accent="puede gustar" />
+          <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((p) => (
+              <li>
+                <ProductCard product={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</Layout>

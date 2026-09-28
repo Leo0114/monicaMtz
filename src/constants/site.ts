@@ -71,14 +71,50 @@ export const FACETS: Facet[] = [
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Inicio", href: "/" },
+  { label: "Tienda", href: "/tienda" },
   { label: "Contacto", href: "/contacto" },
 ];
 
-/** Navegación completa (menú móvil y footer): Inicio, facetas y Contacto. */
+/** Navegación completa (menú móvil): Inicio, facetas, Tienda y Contacto. */
 export const ALL_LINKS: NavLink[] = [
   NAV_LINKS[0],
   ...FACETS.map(({ id, label, href }) => ({ label, href, facet: id })),
   NAV_LINKS[1],
+  NAV_LINKS[2],
+];
+
+/* ─── Tienda ───────────────────────────────────────────────────── */
+
+/** Tipos de producto. Cada tipo es una línea con su propia sección en /tienda. */
+export const PRODUCT_TYPES = ["perfume", "zapatos"] as const;
+export type ProductType = (typeof PRODUCT_TYPES)[number];
+
+export interface ProductLine {
+  id: ProductType;
+  /** Nombre corto: chips, etiquetas y migas de pan. */
+  label: string;
+  title: string;
+  /** Final del título, en itálica. */
+  accent: string;
+  description: string;
+}
+
+/** El orden define el orden de las secciones en la tienda. */
+export const PRODUCT_LINES: ProductLine[] = [
+  {
+    id: "perfume",
+    label: "Perfumes",
+    title: "Fragancias ",
+    accent: "que se quedan",
+    description: "Aromas pensados para acompañarte todo el día y dejar huella sin pedir permiso.",
+  },
+  {
+    id: "zapatos",
+    label: "Calzado",
+    title: "Pasos ",
+    accent: "con carácter",
+    description: "Calzado cómodo y con personalidad, para caminar tu propia historia.",
+  },
 ];
 
 /** Ordenadas por prioridad: Instagram, TikTok, YouTube, Facebook. */
@@ -116,6 +152,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const CONTACT = {
   email: "contacto.negocios@optimmkt.com",
   phoneHref: "tel:+528124467284",
+  /** Número para wa.me: código de país + número, sin «+» ni espacios. */
+  whatsapp: "528124467284",
 } as const;
 
 export const BOOK_URL =

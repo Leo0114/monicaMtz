@@ -1,0 +1,100 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProductCard from "@/components/shop/ProductCard.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import ContactCta from "@/components/shared/ContactCta.astro";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import { getProducts, groupByLine } from "@/lib/shop";
+
+export const prerender = true;
+
+const lines = groupByLine(await getProducts());
+---
+
+<Layout title="Tienda" description="Perfumes y calzado de la línea Mony Mtz. Elige tu pieza y aparta por WhatsApp.">
+  <section class="relative isolate overflow-hidden px-4 pt-32 pb-12 md:px-8 md:pt-44 md:pb-20">
+    <div
+      aria-hidden="true"
+      class="absolute -top-32 -right-24 -z-10 size-[26rem] rounded-full bg-primary/20 blur-3xl md:size-[40rem]"
+    >
+    </div>
+
+    <div class="mx-auto flex max-w-6xl flex-col gap-7">
+      <ScrollReveal client:load>
+        <nav aria-label="Ruta" class="mb-6">
+          <ol class="flex items-center gap-2 text-[0.65rem] font-medium tracking-[0.3em] uppercase md:text-xs">
+            <li>
+              <a href="/" class="text-muted transition-colors duration-300 hover:text-ink">Inicio</a>
+            </li>
+            <li aria-hidden="true" class="h-px w-6 bg-primary"></li>
+            <li aria-current="page" class="text-primary">Tienda</li>
+          </ol>
+        </nav>
+        <h1 class="max-w-4xl font-serif text-[clamp(3rem,10vw,6.5rem)] leading-[0.95] font-light tracking-[-0.03em] text-ink">
+          Piezas para llevar
+          <em class="block text-primary">un poco de mí</em>
+        </h1>
+      </ScrollReveal>
+
+      <ScrollReveal client:load delay={0.15}>
+        <p class="max-w-lg text-base leading-relaxed text-muted md:text-lg">
+          Sin carritos ni pasarelas: eliges tu pieza, me escribes por WhatsApp y coordinamos pago y envío.
+        </p>
+      </ScrollReveal>
+
+      {
+        lines.length > 1 && (
+          <ScrollReveal client:load delay={0.25}>
+            <nav aria-label="Líneas de producto">
+              <ul class="flex flex-wrap gap-2">
+                {lines.map(({ line, products }) => (
+                  <li>
+                    <a
+                      href={`#${line.id}`}
+                      class="inline-flex h-10 items-center gap-2.5 rounded-full border border-line px-5 text-[0.7rem] font-medium tracking-[0.18em] text-ink uppercase transition-[background-color,border-color,color,scale] duration-500 ease-apple hover:border-primary hover:bg-primary hover:text-on-primary active:scale-95 active:duration-100"
+                    >
+                      {line.label}
+                      <span class="text-muted tabular-nums">{products.length}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </ScrollReveal>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    lines.map(({ line, products }, lineIndex) => (
+      <section id={line.id} class="scroll-mt-24 px-4 py-16 md:px-8 md:py-24">
+        <div class="mx-auto flex max-w-6xl flex-col gap-12 md:gap-16">
+          <SectionHeading
+            eyebrow={`Línea 0${lineIndex + 1} · ${line.label}`}
+            title={line.title}
+            accent={line.accent}
+            description={line.description}
+          />
+          {/* Sin ScrollReveal: su opacity inicial dejaría la tarjeta invisible para la view transition de regreso. */}
+          <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((product, i) => (
+              <li>
+                <ProductCard product={product} eager={lineIndex === 0 && i < 3} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <div class="pt-12 md:pt-20">
+    <ContactCta
+      eyebrow="Mayoreo y colaboraciones"
+      title="¿Quieres llevar la línea "
+      accent="a tu tienda"
+      description="Pedidos especiales, mayoreo y colaboraciones con marcas afines."
+    />
+  </div>
+</Layout>
