@@ -1,7 +1,19 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { FACETS, type FacetId } from "@/constants/site";
+
+import pintoraImg from "@/assets/images/pintoraF.avif";
+import escritoraImg from "@/assets/images/escritoraF.avif";
+import productoraImg from "@/assets/images/productoraF.avif";
+
+const FACET_IMAGES: Partial<Record<FacetId, ImageMetadata>> = {
+  pintora: pintoraImg,
+  escritora: escritoraImg,
+  productora: productoraImg,
+};
 
 /**
  * Puerta de entrada a las facetas. Cada tarjeta lleva `data-facet`, así se
@@ -26,7 +38,11 @@ const {
   id = "facetas",
 } = Astro.props;
 
-const facets = FACETS.map((facet, i) => ({ ...facet, number: i + 1 })).filter((f) => f.id !== exclude);
+const facets = FACETS.map((facet, i) => ({
+  ...facet,
+  number: i + 1,
+  image: FACET_IMAGES[facet.id],
+})).filter((f) => f.id !== exclude);
 ---
 
 <section id={id} class="relative px-4 py-24 md:px-8 md:py-36">
@@ -47,17 +63,36 @@ const facets = FACETS.map((facet, i) => ({ ...facet, number: i + 1 })).filter((f
                 href={facet.href}
                 class="group relative isolate flex h-full min-h-[19rem] flex-col justify-between gap-12 overflow-hidden rounded-[1.75rem] bg-primary p-7 text-on-primary shadow-[0_30px_60px_-36px] shadow-primary/70 transition-[translate,box-shadow,scale] duration-700 ease-apple hover:-translate-y-1.5 hover:shadow-[0_40px_70px_-30px] active:scale-[0.985] active:duration-150 md:min-h-[24rem] md:p-8"
               >
-                <!-- Inicial gigante como textura -->
-                <span
-                  aria-hidden="true"
-                  class="pointer-events-none absolute -right-6 -bottom-16 -z-10 font-serif text-[16rem] leading-none text-on-primary/10 italic transition-transform duration-1000 ease-apple select-none group-hover:-translate-x-3 group-hover:-translate-y-3"
-                >
-                  {facet.label[0]}
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="pointer-events-none absolute -top-20 -left-20 -z-10 size-48 rounded-full bg-primary-soft opacity-60 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
-                />
+                {facet.image ? (
+                  <>
+                    <Image
+                      src={facet.image}
+                      alt={facet.label}
+                      class="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center transition-[transform,filter] duration-700 ease-apple group-hover:scale-105"
+                      widths={[360, 540, 720]}
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    />
+                    <!-- Overlay degradado para asegurar perfecta legibilidad tipográfica y preservar el tono de la faceta -->
+                    <div
+                      aria-hidden="true"
+                      class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-primary/95 via-primary/75 to-primary/45 transition-opacity duration-700 group-hover:from-primary/90 group-hover:via-primary/65 group-hover:to-primary/35"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <!-- Inicial gigante como textura cuando no hay imagen disponible -->
+                    <span
+                      aria-hidden="true"
+                      class="pointer-events-none absolute -right-6 -bottom-16 -z-10 font-serif text-[16rem] leading-none text-on-primary/10 italic transition-transform duration-1000 ease-apple select-none group-hover:-translate-x-3 group-hover:-translate-y-3"
+                    >
+                      {facet.label[0]}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      class="pointer-events-none absolute -top-20 -left-20 -z-10 size-48 rounded-full bg-primary-soft opacity-60 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
+                    />
+                  </>
+                )}
 
                 <div class="flex items-start justify-between">
                   <span class="font-sans text-xs tracking-widest opacity-75">0{facet.number}</span>

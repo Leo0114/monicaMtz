@@ -13,11 +13,11 @@ import FacetGrid from "@/components/facets/FacetGrid.astro";
 import ContactCta from "@/components/shared/ContactCta.astro";
 import { datosHome } from "@/api/home";
 import { BOOK_URL } from "@/constants/site";
-import brandLogo from "@/assets/realLogo.jpeg";
+import homeImage from "@/assets/home.avif";
 import faceLogo from "@/assets/logo.png";
 
 const [portrait, face] = await Promise.all([
-  getImage({ src: brandLogo, width: 900, format: "webp" }),
+  getImage({ src: homeImage, width: 900, format: "webp" }),
   getImage({ src: faceLogo, width: 160, format: "webp" }),
 ]);
 
@@ -33,11 +33,26 @@ const [motto] = datosHome.lema.split(" - ");
     faceSrc={face.src}
     bookHref={BOOK_URL}
   />
-  <MottoMarquee phrases={["Si yo puedo, tú también", "Primero ser y después tener", "El arte de mentirnos"]} />
+  <MottoMarquee
+    phrases={[
+      "Si yo puedo, tú también",
+      "Primero ser y después tener",
+      "El arte de mentirnos",
+    ]}
+  />
   <AboutSection />
   <FacetGrid />
-  <BookSection book={datosHome.libro} author={datosHome.autora} href={BOOK_URL} moreHref="/escritora" />
-  <FilmSection film={datosHome.cortometraje} moreHref="/productora" moreLabel="Conoce a la productora" />
+  <BookSection
+    book={datosHome.libro}
+    author={datosHome.autora}
+    href={BOOK_URL}
+    moreHref="/escritora"
+  />
+  <FilmSection
+    film={datosHome.cortometraje}
+    moreHref="/productora"
+    moreLabel="Conoce a la productora"
+  />
   <SeriesSection series={datosHome.series} moreHref="/creadora-de-contenido" />
   <SocialSection />
   <GallerySlider />
