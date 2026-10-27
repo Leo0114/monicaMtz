@@ -4,6 +4,7 @@ import FacetHero from "@/components/facets/FacetHero.astro";
 import FacetGrid from "@/components/facets/FacetGrid.astro";
 import FilmSection from "@/components/home/FilmSection.astro";
 import ContactCta from "@/components/shared/ContactCta.astro";
+import Gallery from "@/components/shared/Gallery.astro";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import YouTubeEmbed from "@/components/shared/YouTubeEmbed.astro";
 import SectionHeading from "@/components/ui/SectionHeading.astro";
@@ -48,6 +49,18 @@ const CREDITS = [
   </section>
 
   <FilmSection film={film} eyebrow="Cortometraje · 2026" />
+
+  <section class="px-4 py-24 md:px-8 md:py-36">
+    <div class="mx-auto max-w-6xl">
+      <Gallery
+        name="images/gal/produ"
+        eyebrow="Galería"
+        title="Noche de estreno"
+        layout="mosaic"
+        rowHeight="18rem"
+      />
+    </div>
+  </section>
 
   <section class="bg-surface px-4 py-24 md:px-8 md:py-36">
     <div class="mx-auto flex max-w-6xl flex-col gap-14 md:gap-20">

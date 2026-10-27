@@ -10,6 +10,10 @@ interface Props {
   eyebrow?: string;
   /** `mosaic` gives the first image a hero cell; `grid` keeps every cell equal. */
   layout?: "mosaic" | "grid";
+  /** Custom row height — useful for portrait / full-body photos. Accepts any CSS value. */
+  rowHeight?: string;
+  /** 0-based indices of images that should focus on the top (e.g. faces). */
+  focusTop?: number[];
   class?: string;
 }
 
@@ -18,6 +22,7 @@ const {
   title,
   eyebrow,
   layout = "mosaic",
+  rowHeight,
   class: className = "",
 } = Astro.props;
 
@@ -78,9 +83,11 @@ const mosaicSpans = [
         id={galleryId}
         data-pswp-gallery
         class:list={[
-          "grid auto-rows-[13rem] grid-cols-2 gap-3 sm:auto-rows-[11rem] sm:gap-4 lg:auto-rows-[13rem]",
+          "grid grid-cols-2 gap-3 sm:gap-4",
+          !rowHeight && "auto-rows-[13rem] sm:auto-rows-[11rem] lg:auto-rows-[13rem]",
           layout === "mosaic" ? "sm:grid-cols-6" : "sm:grid-cols-3",
         ]}
+        style={rowHeight ? `grid-auto-rows:${rowHeight}` : undefined}
       >
         {images.map(({ src, label }, i) => (
           <a
