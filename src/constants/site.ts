@@ -71,7 +71,7 @@ export const FACETS: Facet[] = [
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Inicio", href: "/" },
-  { label: "Tienda", href: "/tienda" },
+  // { label: "Tienda", href: "/tienda" },
   { label: "Contacto", href: "/contacto" },
 ];
 
@@ -80,7 +80,7 @@ export const ALL_LINKS: NavLink[] = [
   NAV_LINKS[0],
   ...FACETS.map(({ id, label, href }) => ({ label, href, facet: id })),
   NAV_LINKS[1],
-  NAV_LINKS[2],
+  // NAV_LINKS[2],
 ];
 
 /* ─── Tienda ───────────────────────────────────────────────────── */
@@ -106,14 +106,16 @@ export const PRODUCT_LINES: ProductLine[] = [
     label: "Perfumes",
     title: "Fragancias ",
     accent: "que se quedan",
-    description: "Aromas pensados para acompañarte todo el día y dejar huella sin pedir permiso.",
+    description:
+      "Aromas pensados para acompañarte todo el día y dejar huella sin pedir permiso.",
   },
   {
     id: "zapatos",
     label: "Calzado",
     title: "Pasos ",
     accent: "con carácter",
-    description: "Calzado cómodo y con personalidad, para caminar tu propia historia.",
+    description:
+      "Calzado cómodo y con personalidad, para caminar tu propia historia.",
   },
 ];
 

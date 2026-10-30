@@ -10,10 +10,9 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isActive = (href: string) => currentPath === href;
 const inFacet = FACETS.some((f) => isActive(f.href));
 // «Inicio» (NAV_LINKS[0]) oculto de momento en escritorio: el logo ya lleva a "/".
-// Para restaurarlo: `const [home, shop, contact]` y descomentar su <li> abajo.
-const [, shop, contact] = NAV_LINKS;
-// La tienda sigue activa en el detalle de cada producto (/tienda/<id>).
-const inShop = currentPath === shop.href || currentPath.startsWith(`${shop.href}/`);
+// «Tienda» comentada temporalmente en site.ts.
+// Para restaurar Tienda: `const [home, shop, contact]` y descomentar el <li> de Tienda abajo.
+const contact = NAV_LINKS.find((l) => l.href === "/contacto") ?? NAV_LINKS[1];
 const linkClass =
   "group relative py-2 text-[0.7rem] font-medium tracking-[0.22em] text-muted uppercase transition-colors duration-500 hover:text-ink aria-[current=page]:text-ink";
 const underlineClass =
@@ -144,19 +143,23 @@ const underlineClass =
           </div>
         </li>
 
+        {/* Tienda comentada de momento (descomentar al reactivarla):
         <li>
-          <a href={shop.href} aria-current={inShop ? "page" : undefined} class={linkClass}>
-            {shop.label}
+          <a href="/tienda" class={linkClass}>
+            Tienda
             <span class={underlineClass}></span>
           </a>
         </li>
+        */}
 
-        <li>
-          <a href={contact.href} aria-current={isActive(contact.href) ? "page" : undefined} class={linkClass}>
-            {contact.label}
-            <span class={underlineClass}></span>
-          </a>
-        </li>
+        {contact && (
+          <li>
+            <a href={contact.href} aria-current={isActive(contact.href) ? "page" : undefined} class={linkClass}>
+              {contact.label}
+              <span class={underlineClass}></span>
+            </a>
+          </li>
+        )}
       </ul>
       <span class="h-5 w-px bg-line" aria-hidden="true"></span>
       <ThemeToggle />
