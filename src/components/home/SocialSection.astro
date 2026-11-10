@@ -1,8 +1,18 @@
 ---
+import { Image } from "astro:assets";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import SocialIcon from "@/components/shared/SocialIcon";
 import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { SOCIAL_LINKS } from "@/constants/site";
+
+const instaModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../../assets/images/insta/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG}",
+  { eager: true }
+);
+
+const instaImages = Object.entries(instaModules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, mod]) => mod.default);
 ---
 
 <section id="redes" class="relative px-4 py-24 md:px-8 md:py-36">
@@ -26,21 +36,64 @@ import { SOCIAL_LINKS } from "@/constants/site";
                 rel="noopener noreferrer"
                 class:list={[
                   "group relative flex h-full flex-col justify-between gap-10 overflow-hidden rounded-[1.75rem] border border-line p-6 transition-all duration-700 ease-apple hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px] hover:shadow-primary/40 active:scale-[0.985] md:p-8",
-                  i === 0 ? "bg-primary text-on-primary md:min-h-[26rem]" : "bg-surface text-ink hover:border-primary/40",
+                  i === 0
+                    ? instaImages.length > 0
+                      ? "bg-ink text-white md:min-h-[26rem]"
+                      : "bg-primary text-on-primary md:min-h-[26rem]"
+                    : "bg-surface text-ink hover:border-primary/40",
                 ]}
               >
-                <div class="flex items-start justify-between">
+                {i === 0 && instaImages.length > 0 && (
+                  <div
+                    data-insta-slider
+                    class="pointer-events-none absolute inset-0 -z-0 overflow-hidden select-none"
+                    aria-hidden="true"
+                  >
+                    {instaImages.map((img, idx) => (
+                      <div
+                        data-insta-slide
+                        class:list={[
+                          "absolute inset-0 transition-[opacity,transform] duration-1000 ease-apple",
+                          idx === 0 ? "opacity-100 scale-100" : "opacity-0 scale-105 pointer-events-none",
+                        ]}
+                      >
+                        <Image
+                          src={img}
+                          alt=""
+                          widths={[600, 900, 1200]}
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                          loading={idx === 0 ? "eager" : "lazy"}
+                          class="size-full object-cover object-top transition-transform duration-[4000ms] ease-out group-hover:scale-105"
+                        />
+                      </div>
+                    ))}
+
+                    {/* Scrims cinematográficos para máxima legibilidad y calidez editorial */}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 transition-opacity duration-700 group-hover:from-black/95 group-hover:via-black/55" />
+                    <div class="absolute inset-0 bg-primary/25 mix-blend-multiply" />
+                    <div class="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[1.75rem]" />
+                  </div>
+                )}
+
+                <div class="relative z-10 flex items-start justify-between">
                   <span
                     class:list={[
                       "grid place-items-center rounded-full transition-transform duration-700 ease-apple group-hover:scale-110 group-hover:-rotate-6",
-                      i === 0 ? "size-16 bg-on-primary/10 md:size-20" : "size-12 bg-primary/10 text-primary",
+                      i === 0
+                        ? instaImages.length > 0
+                          ? "size-16 bg-white/15 text-white backdrop-blur-md border border-white/25 shadow-lg shadow-black/20 md:size-20"
+                          : "size-16 bg-on-primary/10 text-on-primary md:size-20"
+                        : "size-12 bg-primary/10 text-primary",
                     ]}
                   >
                     <SocialIcon id={social.id} className={i === 0 ? "size-7 md:size-8" : "size-5"} />
                   </span>
                   <svg
                     viewBox="0 0 24 24"
-                    class="size-5 opacity-50 transition-all duration-500 ease-apple group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                    class:list={[
+                      "size-5 transition-all duration-500 ease-apple group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+                      i === 0 ? "text-white/70 group-hover:text-white group-hover:opacity-100" : "opacity-50 group-hover:opacity-100",
+                    ]}
                     fill="none"
                     stroke="currentColor"
                     stroke-width="1.5"
@@ -49,14 +102,32 @@ import { SOCIAL_LINKS } from "@/constants/site";
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8" />
                   </svg>
                 </div>
-                <div>
-                  <p class:list={["text-[0.65rem] tracking-[0.25em] uppercase", i === 0 ? "opacity-70" : "text-muted"]}>
+
+                <div class="relative z-10">
+                  <p
+                    class:list={[
+                      "text-[0.65rem] tracking-[0.25em] uppercase",
+                      i === 0 ? "text-white/75 font-medium" : "text-muted",
+                    ]}
+                  >
                     {social.handle}
                   </p>
-                  <h3 class:list={["mt-2 font-serif leading-none", i === 0 ? "text-5xl md:text-7xl" : "text-3xl"]}>
+                  <h3
+                    class:list={[
+                      "mt-2 font-serif leading-none",
+                      i === 0 ? "text-5xl md:text-7xl text-white drop-shadow-sm" : "text-3xl",
+                    ]}
+                  >
                     {social.label}
                   </h3>
-                  <p class:list={["mt-3 text-sm", i === 0 ? "opacity-80" : "text-muted"]}>{social.description}</p>
+                  <p
+                    class:list={[
+                      "mt-3 text-sm",
+                      i === 0 ? "text-white/85 max-w-md" : "text-muted",
+                    ]}
+                  >
+                    {social.description}
+                  </p>
                 </div>
               </a>
             </ScrollReveal>
@@ -66,3 +137,58 @@ import { SOCIAL_LINKS } from "@/constants/site";
     </ul>
   </div>
 </section>
+
+<script>
+  let timer: ReturnType<typeof setInterval> | null = null;
+
+  function initInstaSlider() {
+    stopInstaSlider();
+
+    const slider = document.querySelector<HTMLElement>("[data-insta-slider]");
+    if (!slider) return;
+
+    const slides = Array.from(slider.querySelectorAll<HTMLElement>("[data-insta-slide]"));
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+    let isPaused = false;
+
+    const showSlide = (nextIndex: number) => {
+      slides[currentIndex]?.classList.remove("opacity-100", "scale-100");
+      slides[currentIndex]?.classList.add("opacity-0", "scale-105", "pointer-events-none");
+
+      slides[nextIndex]?.classList.remove("opacity-0", "scale-105", "pointer-events-none");
+      slides[nextIndex]?.classList.add("opacity-100", "scale-100");
+
+      currentIndex = nextIndex;
+    };
+
+    const nextSlide = () => {
+      if (isPaused || document.hidden) return;
+      const nextIndex = (currentIndex + 1) % slides.length;
+      showSlide(nextIndex);
+    };
+
+    timer = setInterval(nextSlide, 4000);
+
+    const card = slider.closest("a");
+    if (card) {
+      card.addEventListener("mouseenter", () => {
+        isPaused = true;
+      });
+      card.addEventListener("mouseleave", () => {
+        isPaused = false;
+      });
+    }
+  }
+
+  function stopInstaSlider() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  document.addEventListener("astro:page-load", initInstaSlider);
+  document.addEventListener("astro:before-swap", stopInstaSlider);
+</script>
